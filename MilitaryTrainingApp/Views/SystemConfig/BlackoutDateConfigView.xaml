@@ -9,13 +9,9 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="DANH SÁCH NGÀY NGHỈ LỄ BẮT BUỘC" FontSize="16" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" VerticalAlignment="Center"/>
-            <Button Content="Thêm Dòng Mới" Margin="20,0,0,0" Padding="10,5" Click="BtnAdd_Click"/>
-            <Button Content="Xóa Dòng Chọn" Margin="5,0,0,0" Padding="10,5" Background="DarkRed" Foreground="White" Click="BtnDelete_Click"/>
-        </StackPanel>
+        <TextBlock Grid.Row="0" Text="DANH SÁCH NGÀY NGHỈ LỄ BẮT BUỘC" FontSize="16" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,10"/>
 
-        <DataGrid x:Name="dgBlackoutDates" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+        <DataGrid x:Name="dgBlackoutDates" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Tên Nghỉ Lễ (VD: Tết)" Binding="{Binding HolidayName}" Width="*"/>
                 <DataGridTextColumn Header="Từ ngày (yyyy-MM-dd)" Binding="{Binding StartDate, StringFormat=yyyy-MM-dd}" Width="150"/>
