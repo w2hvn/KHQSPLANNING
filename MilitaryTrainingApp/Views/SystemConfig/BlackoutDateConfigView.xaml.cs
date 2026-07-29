@@ -2,25 +2,31 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
 using MilitaryTrainingApp.Entities;
 
-namespace MilitaryTrainingApp.Views
+namespace MilitaryTrainingApp.Views.SystemConfig
 {
-    public partial class BlackoutDateWindow : Window
+    public partial class BlackoutDateConfigView : UserControl
     {
         private int _planId;
         private ObservableCollection<BlackoutDate> _dates = new ObservableCollection<BlackoutDate>();
 
-        public BlackoutDateWindow(int planId)
+        public BlackoutDateConfigView()
         {
             InitializeComponent();
-            _planId = planId;
-            LoadData();
         }
 
-        private async void LoadData()
+        public void LoadData(int planId)
         {
+            _planId = planId;
+            RefreshGrid();
+        }
+
+        private async void RefreshGrid()
+        {
+            if (_planId <= 0) return;
             try
             {
                 using var db = new AppDbContext();
@@ -32,6 +38,11 @@ namespace MilitaryTrainingApp.Views
             {
                 MessageBox.Show($"Lỗi tải ngày nghỉ: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void BtnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshGrid();
         }
 
         private async void BtnSave_Click(object sender, RoutedEventArgs e)
@@ -62,17 +73,12 @@ namespace MilitaryTrainingApp.Views
 
                 await db.SaveChangesAsync();
                 MessageBox.Show("Lưu cấu hình ngày nghỉ lễ thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                this.Close();
+                RefreshGrid();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi lưu dữ liệu: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-
-        private void BtnCancel_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }

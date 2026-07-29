@@ -20,6 +20,10 @@ CREATE TABLE plan_target (
     plan_id INT NOT NULL,
     target_id INT NOT NULL,
     UNIQUE KEY uk_plan_target (plan_id, target_id),
+    days_per_week INT DEFAULT 5 COMMENT 'Số ngày HL/tuần',
+    morning_hours DECIMAL(3,1) DEFAULT 4.0 COMMENT 'Số giờ HL buổi sáng',
+    afternoon_hours DECIMAL(3,1) DEFAULT 3.0 COMMENT 'Số giờ HL buổi chiều',
+    night_hours DECIMAL(3,1) DEFAULT 2.0 COMMENT 'Số giờ HL buổi tối',
     FOREIGN KEY (plan_id) REFERENCES plan(id) ON DELETE CASCADE,
     FOREIGN KEY (target_id) REFERENCES training_target(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -72,7 +76,6 @@ CREATE TABLE time_node (
     level INT DEFAULT 1,
     tree_path VARCHAR(500),
     sort_order INT,
-    FOREIGN KEY (plan_id) REFERENCES plan(id) ON DELETE CASCADE,
     FOREIGN KEY (parent_id) REFERENCES time_node(id) ON DELETE CASCADE,
     FOREIGN KEY (node_type_id) REFERENCES time_node_type(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -53,6 +53,11 @@ namespace MilitaryTrainingApp.Entities
                 entity.ToTable("plan_target");
                 entity.HasIndex(e => new { e.PlanId, e.TargetId }).IsUnique();
 
+                entity.Property(e => e.MorningHours).HasColumnType("decimal(3,1)").HasDefaultValue(4.0m);
+                entity.Property(e => e.AfternoonHours).HasColumnType("decimal(3,1)").HasDefaultValue(3.0m);
+                entity.Property(e => e.NightHours).HasColumnType("decimal(3,1)").HasDefaultValue(2.0m);
+                entity.Property(e => e.DaysPerWeek).HasDefaultValue(5);
+
                 entity.HasOne(e => e.Plan)
                       .WithMany(p => p.PlanTargets)
                       .HasForeignKey(e => e.PlanId)

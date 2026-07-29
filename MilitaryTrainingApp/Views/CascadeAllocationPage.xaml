@@ -74,9 +74,8 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <Button Content="⚙️ Ngày Nghỉ Lễ" Margin="0,0,5,0" Click="BtnBlackoutDate_Click" Background="LightGray" Foreground="Black"/>
-                        <Button Content="⚙️ Cấu Hình Ưu Tiên" Margin="0,0,5,0" Click="BtnPriorityRule_Click" Background="LightGray" Foreground="Black"/>
-                        <Button Content="⚡ TỰ ĐỘNG XẾP LỊCH" Click="BtnAutoSchedule_Click" Background="{StaticResource AccentBrush}" Foreground="White" FontWeight="Bold"/>
+                        <Button Content="⚙️ Cấu Hình Hệ Thống" Margin="0,0,10,0" Click="BtnSystemConfig_Click" Background="LightGray" Foreground="Black" FontWeight="Bold" Padding="10,5"/>
+                        <Button Content="⚡ TỰ ĐỘNG XẾP LỊCH" Click="BtnAutoSchedule_Click" Background="{StaticResource AccentBrush}" Foreground="White" FontWeight="Bold" Padding="10,5"/>
                     </StackPanel>
                 </Grid>
             </Border>

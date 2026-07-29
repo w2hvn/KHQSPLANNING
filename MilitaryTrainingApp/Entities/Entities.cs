@@ -58,6 +58,11 @@ namespace MilitaryTrainingApp.Entities
         public int TargetId { get; set; }
         public TrainingTarget Target { get; set; } = null!;
 
+        public int DaysPerWeek { get; set; } = 5;
+        public decimal MorningHours { get; set; } = 4.0m;
+        public decimal AfternoonHours { get; set; } = 3.0m;
+        public decimal NightHours { get; set; } = 2.0m;
+
         public ICollection<ProgramNode> ProgramNodes { get; set; } = new List<ProgramNode>();
     }
 

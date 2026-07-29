@@ -289,25 +289,14 @@ namespace MilitaryTrainingApp.Views
             }
         }
 
-        private void BtnBlackoutDate_Click(object sender, RoutedEventArgs e)
+        private void BtnSystemConfig_Click(object sender, RoutedEventArgs e)
         {
             if (_currentPlanId <= 0)
             {
                 MessageBox.Show("Vui lòng chọn Kế hoạch trước.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            var win = new BlackoutDateWindow(_currentPlanId);
-            win.ShowDialog();
-        }
-
-        private void BtnPriorityRule_Click(object sender, RoutedEventArgs e)
-        {
-            if (_currentPlanId <= 0)
-            {
-                MessageBox.Show("Vui lòng chọn Kế hoạch trước.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            var win = new PriorityRuleConfigWindow(_currentPlanId);
+            var win = new SystemConfig.SystemConfigWindow(_currentPlanId);
             win.ShowDialog();
         }
 

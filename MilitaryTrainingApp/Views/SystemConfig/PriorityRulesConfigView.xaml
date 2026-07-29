@@ -1,0 +1,37 @@
+<UserControl x:Class="MilitaryTrainingApp.Views.SystemConfig.PriorityRulesConfigView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="White">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="CẤU HÌNH TRỌNG SỐ ƯU TIÊN (PRIORITY RULES)" FontSize="16" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,10"/>
+
+        <DataGrid x:Name="dgRules" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" BorderBrush="{StaticResource BorderBrush}">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Header="Bật/Tắt" Binding="{Binding IsActive}" Width="80"/>
+                <DataGridTextColumn Header="Mã Quy tắc" Binding="{Binding RuleCode}" Width="200" IsReadOnly="True" Foreground="Gray"/>
+                <DataGridTextColumn Header="Tên Quy tắc" Binding="{Binding RuleName}" Width="*" IsReadOnly="True"/>
+
+                <DataGridTextColumn Header="Điểm Ưu Tiên (1-100)" Binding="{Binding PriorityScore}" Width="150">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Foreground" Value="DarkRed"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Tải Lại" Width="100" Margin="0,0,10,0" Background="Gray" Click="BtnRefresh_Click"/>
+            <Button Content="Lưu Cấu Hình" Width="130" Background="{StaticResource AccentBrush}" FontWeight="Bold" Click="BtnSave_Click"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
