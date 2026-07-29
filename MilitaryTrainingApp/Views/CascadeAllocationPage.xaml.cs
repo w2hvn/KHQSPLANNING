@@ -467,7 +467,12 @@ namespace MilitaryTrainingApp.Views
         public bool IsHeavyPhysical { get; set; } = false;
         public int? PrerequisiteNodeId { get; set; }
 
-        public bool IsHighlight { get; set; } = false;
+        private bool _isHighlight;
+        public bool IsHighlight
+        {
+            get => _isHighlight;
+            set { _isHighlight = value; OnPropertyChanged(nameof(IsHighlight)); }
+        }
 
         public string BgColorHex { get; set; } = "#FFFFFF";
         public Brush BgBrush

@@ -1,48 +1,38 @@
-using System.Collections.Generic;
 using System.Windows;
-using MilitaryTrainingApp.Entities;
 
 namespace MilitaryTrainingApp.Views
 {
     public partial class ConflictResolverWindow : Window
     {
-        public ProgramNode? SelectedNode { get; private set; }
+        public int SelectedOption { get; private set; } = 3; // Mặc định tự nhập
 
-        public ConflictResolverWindow(List<ProgramNode> conflictNodes, string timeContext)
+        public ConflictResolverWindow(string subjectName, decimal budget, int currentIndex, int totalItems)
         {
             InitializeComponent();
-            txtMessage.Text = $"Quỹ thời gian của '{timeContext}' đã cạn nhưng có {conflictNodes.Count} nội dung có cùng điểm ưu tiên. Vui lòng chọn nội dung được xếp trước:";
-
-            var options = new List<ConflictOption>();
-            foreach (var node in conflictNodes)
-            {
-                options.Add(new ConflictOption { Node = node, DisplayText = $"[{node.Code}] {node.Name}" });
-            }
-            lstOptions.ItemsSource = options;
-            lstOptions.SelectedIndex = 0;
+            int percent = totalItems > 0 ? (int)((double)currentIndex / totalItems * 100) : 0;
+            txtTitle.Text = $"Phát hiện phân vân tại Môn: {subjectName} (Tổng {budget}h) - Tiến độ: {currentIndex}/{totalItems} ({percent}%)";
+            pbProgress.Value = percent;
         }
 
-        private void BtnContinue_Click(object sender, RoutedEventArgs e)
+        private void BtnOption1_Click(object sender, RoutedEventArgs e)
         {
-            if (lstOptions.SelectedItem is ConflictOption option)
-            {
-                SelectedNode = option.Node;
-                this.DialogResult = true;
-                this.Close();
-            }
-        }
-
-        private void BtnSkip_Click(object sender, RoutedEventArgs e)
-        {
-            SelectedNode = null;
-            this.DialogResult = false;
+            SelectedOption = 1;
+            this.DialogResult = true;
             this.Close();
         }
-    }
 
-    public class ConflictOption
-    {
-        public ProgramNode Node { get; set; } = null!;
-        public string DisplayText { get; set; } = string.Empty;
+        private void BtnOption2_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedOption = 2;
+            this.DialogResult = true;
+            this.Close();
+        }
+
+        private void BtnOption3_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedOption = 3;
+            this.DialogResult = true;
+            this.Close();
+        }
     }
 }
