@@ -66,7 +66,7 @@ namespace MilitaryTrainingApp.Views
                 ClearDynamicColumns();
 
                 _conflictLogs.Clear();
-                lstConflictLogs.ItemsSource = _conflictLogs;
+                dgConflictLog.ItemsSource = _conflictLogs;
             }
             catch (Exception ex)
             {
@@ -336,7 +336,11 @@ namespace MilitaryTrainingApp.Views
                             _rowItems,
                             (logItem) =>
                             {
-                                Dispatcher.Invoke(() => _conflictLogs.Add(logItem));
+                            Dispatcher.Invoke(() =>
+                            {
+                                logItem.Index = _conflictLogs.Count + 1;
+                                _conflictLogs.Add(logItem);
+                            });
                             },
                             backgroundDb,
                             System.Threading.CancellationToken.None);
@@ -351,15 +355,17 @@ namespace MilitaryTrainingApp.Views
             }
         }
 
-        private void LstConflictLogs_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void DgConflictLog_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (lstConflictLogs.SelectedItem is ConflictLogItem log)
+            if (dgConflictLog.SelectedItem is ConflictLogItem log)
             {
                 var row = _rowItems.FirstOrDefault(r => r.ProgramNodeId == log.ProgramNodeId);
                 if (row != null)
                 {
                     dgAllocation.ScrollIntoView(row);
                     dgAllocation.SelectedItem = row;
+                    // Optional: You can explicitly set focus to the grid if desired
+                    dgAllocation.Focus();
                 }
             }
         }
@@ -535,8 +541,10 @@ namespace MilitaryTrainingApp.Views
 
     public class ConflictLogItem
     {
+        public int Index { get; set; }
         public int ProgramNodeId { get; set; }
         public string ProgramName { get; set; } = string.Empty;
+        public string Status { get; set; } = "[CẦN XỬ LÝ THỦ CÔNG]";
         public string Reason { get; set; } = string.Empty;
     }
 }
