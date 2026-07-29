@@ -27,33 +27,20 @@ namespace MilitaryTrainingApp
         private void TopHeaderControl_OnPlanTargetChanged(object? sender, int planTargetId)
         {
             _currentPlanTargetId = planTargetId;
-            RefreshCurrentPage();
+
+            // Fix WPF Navigation Lifecycle: Trực tiếp gọi hàm trên instance của trang
+            _programTreePage.RefreshData(_currentPlanTargetId);
+            _cascadeAllocationPage.RefreshData(_currentPlanTargetId);
         }
 
         private void BtnProgramTree_Click(object sender, RoutedEventArgs e)
         {
             mainFrame.Navigate(_programTreePage);
-            RefreshCurrentPage();
         }
 
         private void BtnCascade_Click(object sender, RoutedEventArgs e)
         {
             mainFrame.Navigate(_cascadeAllocationPage);
-            RefreshCurrentPage();
-        }
-
-        private void RefreshCurrentPage()
-        {
-            if (_currentPlanTargetId <= 0) return;
-
-            if (mainFrame.Content is ProgramTreePage treePage)
-            {
-                treePage.RefreshData(_currentPlanTargetId);
-            }
-            else if (mainFrame.Content is CascadeAllocationPage cascadePage)
-            {
-                cascadePage.RefreshData(_currentPlanTargetId);
-            }
         }
     }
 }
