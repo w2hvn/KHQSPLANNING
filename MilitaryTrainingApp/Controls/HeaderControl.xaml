@@ -1,0 +1,26 @@
+<UserControl x:Class="MilitaryTrainingApp.Controls.HeaderControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource PrimaryBrush}">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Kế hoạch Section -->
+        <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0,0,20,0">
+            <TextBlock Text="KẾ HOẠCH NĂM:" Foreground="White" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
+            <ComboBox x:Name="cboPlans" Width="250" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="CboPlans_SelectionChanged"/>
+        </StackPanel>
+
+        <!-- Đối tượng huấn luyện Section -->
+        <TabControl x:Name="lstPlanTargets" Grid.Column="1" Background="Transparent" BorderThickness="0" SelectionChanged="LstPlanTargets_SelectionChanged">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding DisplayText}" FontWeight="SemiBold" Padding="10,5"/>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+        </TabControl>
+    </Grid>
+</UserControl>
