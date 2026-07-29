@@ -13,10 +13,11 @@
         <!-- Header Selector (Kế hoạch & Đối tượng) -->
         <controls:HeaderControl x:Name="TopHeaderControl" Grid.Row="0"/>
 
-        <!-- Điều hướng Page (Tùy chọn phụ trợ thêm để test chuyển trang) -->
+        <!-- Điều hướng Page -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Background="White" Margin="0,0,0,5">
             <Button Content="Chương trình Huấn luyện" Margin="10,5,5,5" Click="BtnProgramTree_Click"/>
-            <Button Content="Phân bổ Thời gian" Margin="5,5,10,5" Click="BtnCascade_Click"/>
+            <Button Content="Phân bổ Thời gian" Margin="5,5,5,5" Click="BtnCascade_Click"/>
+            <Button Content="Báo cáo Tiến độ" Margin="5,5,10,5" Click="BtnTimelineReport_Click"/>
         </StackPanel>
 
         <!-- Main Frame để load nội dung -->

@@ -1,0 +1,90 @@
+<Page x:Class="MilitaryTrainingApp.Views.TimelineReportPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:helpers="clr-namespace:MilitaryTrainingApp.Helpers"
+      Title="TimelineReportPage" Background="{StaticResource BackgroundBrush}">
+
+    <Page.Resources>
+        <helpers:LevelToIndentConverter x:Key="LevelToIndentConverter" />
+
+        <!-- Style cho DataGrid Row để apply Binding -->
+        <Style x:Key="ReportRowStyle" TargetType="DataGridRow">
+            <Setter Property="Background" Value="{Binding BgBrush}" />
+            <Setter Property="FontWeight" Value="{Binding FontWeight}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E6EBE9" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <Border Grid.Row="0" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="Xem Báo Cáo Theo Cấp:" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,10,0"/>
+                    <ComboBox x:Name="cboTimeLevel" Width="150" SelectedIndex="2" SelectionChanged="CboTimeLevel_SelectionChanged">
+                        <ComboBoxItem Content="Cấp Giai đoạn" Tag="STAGE"/>
+                        <ComboBoxItem Content="Cấp Tháng" Tag="MONTH"/>
+                        <ComboBoxItem Content="Cấp Tuần" Tag="WEEK"/>
+                    </ComboBox>
+
+                    <Button x:Name="btnRefresh" Content="Tải Lại Dữ Liệu" Margin="10,0,0,0" Click="BtnRefresh_Click"/>
+                </StackPanel>
+
+                <Button x:Name="btnExportExcel" Grid.Column="2" Content="Xuất Báo Cáo Excel" Background="{StaticResource AccentBrush}" Foreground="White" FontWeight="Bold" Padding="15,5" Click="BtnExportExcel_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- DataGrid Report -->
+        <DataGrid x:Name="dgTimeline" Grid.Row="1"
+                  CanUserAddRows="False" AutoGenerateColumns="False" IsReadOnly="True"
+                  GridLinesVisibility="All" HeadersVisibility="Column"
+                  RowStyle="{StaticResource ReportRowStyle}">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Thời Gian Huấn Luyện" Binding="{Binding TimeLabel}" Width="250"/>
+                <DataGridTextColumn Header="Mã Môn/Bài" Binding="{Binding ProgramCode}" Width="100">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <DataGridTemplateColumn Header="Nội dung huấn luyện" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ProgramName}"
+                                       Margin="{Binding Level, Converter={StaticResource LevelToIndentConverter}}"
+                                       VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn Header="Số Giờ" Binding="{Binding AllocatedHours, StringFormat={}{0:0.##}}" Width="80">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="Foreground" Value="DarkRed"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Page>
