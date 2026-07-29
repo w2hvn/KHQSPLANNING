@@ -157,6 +157,7 @@
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Lý Do/Gợi Ý" Binding="{Binding Reason}" Width="*" FontStyle="Italic" Foreground="Gray"/>
+                            <DataGridTextColumn Header="Thời Gian" Binding="{Binding Timestamp, StringFormat='HH:mm:ss'}" Width="100" Foreground="Gray"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Expander>

@@ -546,5 +546,6 @@ namespace MilitaryTrainingApp.Views
         public string ProgramName { get; set; } = string.Empty;
         public string Status { get; set; } = "[CẦN XỬ LÝ THỦ CÔNG]";
         public string Reason { get; set; } = string.Empty;
+        public DateTime Timestamp { get; set; } = DateTime.Now;
     }
 }

@@ -31,6 +31,11 @@ namespace MilitaryTrainingApp.Views.SystemConfig
             try
             {
                 using var db = new AppDbContext();
+
+                var allTrainingTargets = await db.TrainingTargets.OrderBy(t => t.SortOrder).ToListAsync();
+                cboTrainingTargets.ItemsSource = allTrainingTargets;
+                if (allTrainingTargets.Any()) cboTrainingTargets.SelectedIndex = 0;
+
                 var targets = await db.PlanTargets
                     .Include(pt => pt.Target)
                     .Where(pt => pt.PlanId == _planId)
@@ -59,6 +64,67 @@ namespace MilitaryTrainingApp.Views.SystemConfig
         private void BtnRefresh_Click(object sender, RoutedEventArgs e)
         {
             RefreshGrid();
+        }
+
+        private async void BtnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            if (cboTrainingTargets.SelectedValue is int targetId)
+            {
+                try
+                {
+                    using var db = new AppDbContext();
+                    bool exists = await db.PlanTargets.AnyAsync(pt => pt.PlanId == _planId && pt.TargetId == targetId);
+                    if (!exists)
+                    {
+                        var newPt = new PlanTarget
+                        {
+                            PlanId = _planId,
+                            TargetId = targetId,
+                            DaysPerWeek = 5,
+                            MorningHours = 4.0m,
+                            AfternoonHours = 3.0m,
+                            NightHours = 2.0m
+                        };
+                        db.PlanTargets.Add(newPt);
+                        await db.SaveChangesAsync();
+                        RefreshGrid();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Đối tượng này đã có trong Kế hoạch.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi thêm đối tượng: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private async void BtnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgTargets.SelectedItem is TargetRuleModel selected)
+            {
+                var result = MessageBox.Show($"Xóa đối tượng '{selected.TargetName}' khỏi Kế hoạch sẽ làm mất toàn bộ cấu hình con. Tiếp tục?", "Cảnh báo", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        using var db = new AppDbContext();
+                        var pt = await db.PlanTargets.FindAsync(selected.PlanTargetId);
+                        if (pt != null)
+                        {
+                            db.PlanTargets.Remove(pt);
+                            await db.SaveChangesAsync();
+                            RefreshGrid();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Lỗi xóa đối tượng: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
         }
 
         private async void BtnSave_Click(object sender, RoutedEventArgs e)
