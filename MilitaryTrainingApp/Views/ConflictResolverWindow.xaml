@@ -23,6 +23,9 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Button Grid.Row="3" Content="CHỌN &amp; TIẾP TỤC" Background="{StaticResource AccentBrush}" Foreground="White" FontWeight="Bold" Padding="10" Margin="0,15,0,0" Click="BtnContinue_Click"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="TỰ NHẬP SỐ GIỜ (BỎ QUA)" Background="Gray" Foreground="White" FontWeight="Bold" Padding="10" Margin="0,0,10,0" Click="BtnSkip_Click"/>
+            <Button Content="CHỌN &amp; TIẾP TỤC" Background="{StaticResource AccentBrush}" Foreground="White" FontWeight="Bold" Padding="10" Click="BtnContinue_Click"/>
+        </StackPanel>
     </Grid>
 </Window>

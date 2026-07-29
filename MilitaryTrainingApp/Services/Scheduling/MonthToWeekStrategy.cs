@@ -9,7 +9,7 @@ using MilitaryTrainingApp.Views;
 
 namespace MilitaryTrainingApp.Services.Scheduling
 {
-    public class DetailedLeafStrategy : IAllocationStrategy
+    public class MonthToWeekStrategy : IAllocationStrategy
     {
         public async Task<bool> ExecuteAsync(int planId, int planTargetId, TimeNode parentTimeNode, List<TimeTreeNodeItem> childTimeNodes, List<AllocationRowItem> gridRows, Action<ConflictLogItem> logAction, AppDbContext db, CancellationToken ct)
         {

@@ -194,6 +194,11 @@ namespace MilitaryTrainingApp.Views
                             ProgramCode = pn.Code,
                             ProgramName = pn.Name,
                             Level = pn.Level,
+                            ComplexityLevel = pn.ComplexityLevel,
+                            IsNightTraining = pn.IsNightTraining,
+                            IsOutdoor = pn.IsOutdoor,
+                            IsHeavyPhysical = pn.IsHeavyPhysical,
+                            PrerequisiteNodeId = pn.PrerequisiteNodeId,
                             BgColorHex = pn.Decor?.BgColorHex ?? "#FFFFFF",
                             ParentMaxBudget = pn.Capacity // Nguồn ngân sách gốc
                         });
@@ -227,6 +232,11 @@ namespace MilitaryTrainingApp.Views
                             ProgramCode = pn.Code,
                             ProgramName = pn.Name,
                             Level = pn.Level,
+                            ComplexityLevel = pn.ComplexityLevel,
+                            IsNightTraining = pn.IsNightTraining,
+                            IsOutdoor = pn.IsOutdoor,
+                            IsHeavyPhysical = pn.IsHeavyPhysical,
+                            PrerequisiteNodeId = pn.PrerequisiteNodeId,
                             BgColorHex = pn.Decor?.BgColorHex ?? "#FFFFFF",
                             ParentMaxBudget = maxBudget
                         });

@@ -9,17 +9,15 @@ namespace MilitaryTrainingApp.Services.Scheduling
             switch (timeNodeLevelCode.ToUpper())
             {
                 case "YEAR":
-                case "STAGE":
-                    // Logic vĩ mô (Năm -> Giai đoạn, Giai đoạn -> Tháng)
                     return new YearToStageStrategy();
+                case "STAGE":
+                    return new StageToMonthStrategy();
                 case "MONTH":
-                    // Logic vi mô chi tiết (Tháng -> Tuần)
-                    return new DetailedLeafStrategy();
+                    return new MonthToWeekStrategy();
                 case "WEEK":
-                    // Tuần -> Ngày (Nếu có mở rộng)
-                    return new DetailedLeafStrategy();
+                    return new WeekToDayStrategy();
                 default:
-                    return new DetailedLeafStrategy();
+                    return new MonthToWeekStrategy();
             }
         }
     }

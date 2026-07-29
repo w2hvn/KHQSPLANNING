@@ -31,6 +31,13 @@ namespace MilitaryTrainingApp.Views
                 this.Close();
             }
         }
+
+        private void BtnSkip_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedNode = null;
+            this.DialogResult = false;
+            this.Close();
+        }
     }
 
     public class ConflictOption
