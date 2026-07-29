@@ -8,6 +8,11 @@ namespace MilitaryTrainingApp
         private ProgramTreePage _programTreePage;
         private CascadeAllocationPage _cascadeAllocationPage;
         private TimelineReportPage _timelineReportPage;
+
+        private PlanManagementPage _planManagementPage;
+        private TrainingTargetPage _trainingTargetPage;
+        private TimeTreeManagementPage _timeTreeManagementPage;
+
         private int _currentPlanTargetId = 0;
 
         public MainWindow()
@@ -18,6 +23,10 @@ namespace MilitaryTrainingApp
             _programTreePage = new ProgramTreePage();
             _cascadeAllocationPage = new CascadeAllocationPage();
             _timelineReportPage = new TimelineReportPage();
+
+            _planManagementPage = new PlanManagementPage();
+            _trainingTargetPage = new TrainingTargetPage();
+            _timeTreeManagementPage = new TimeTreeManagementPage();
 
             // Lắng nghe sự kiện từ HeaderControl
             TopHeaderControl.OnPlanTargetChanged += TopHeaderControl_OnPlanTargetChanged;
@@ -49,6 +58,21 @@ namespace MilitaryTrainingApp
         private void BtnTimelineReport_Click(object sender, RoutedEventArgs e)
         {
             mainFrame.Navigate(_timelineReportPage);
+        }
+
+        private void BtnPlanManagement_Click(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(_planManagementPage);
+        }
+
+        private void BtnTrainingTarget_Click(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(_trainingTargetPage);
+        }
+
+        private void BtnTimeTree_Click(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(_timeTreeManagementPage);
         }
     }
 }

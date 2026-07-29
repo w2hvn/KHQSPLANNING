@@ -15,6 +15,12 @@
 
         <!-- Điều hướng Page -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Background="White" Margin="0,0,0,5">
+            <!-- Core Management -->
+            <Button Content="QL Kế Hoạch" Margin="10,5,5,5" Click="BtnPlanManagement_Click" Background="LightGray" Foreground="Black" FontWeight="Bold"/>
+            <Button Content="QL Đối Tượng" Margin="5,5,5,5" Click="BtnTrainingTarget_Click" Background="LightGray" Foreground="Black" FontWeight="Bold"/>
+            <Button Content="QL Cây Thời Gian" Margin="5,5,15,5" Click="BtnTimeTree_Click" Background="LightGray" Foreground="Black" FontWeight="Bold"/>
+
+            <!-- Operations -->
             <Button Content="Chương trình Huấn luyện" Margin="10,5,5,5" Click="BtnProgramTree_Click"/>
             <Button Content="Phân bổ Thời gian" Margin="5,5,5,5" Click="BtnCascade_Click"/>
             <Button Content="Báo cáo Tiến độ" Margin="5,5,10,5" Click="BtnTimelineReport_Click"/>

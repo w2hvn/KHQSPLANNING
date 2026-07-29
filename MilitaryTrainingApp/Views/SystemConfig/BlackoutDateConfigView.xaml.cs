@@ -45,6 +45,19 @@ namespace MilitaryTrainingApp.Views.SystemConfig
             RefreshGrid();
         }
 
+        private void BtnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            _dates.Add(new BlackoutDate { PlanId = _planId, StartDate = DateTime.Now.Date, EndDate = DateTime.Now.Date, HolidayName = "Nghỉ lễ mới" });
+        }
+
+        private void BtnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgBlackoutDates.SelectedItem is BlackoutDate selected)
+            {
+                _dates.Remove(selected);
+            }
+        }
+
         private async void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             try

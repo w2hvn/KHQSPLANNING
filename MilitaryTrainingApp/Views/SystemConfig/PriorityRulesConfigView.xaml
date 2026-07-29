@@ -9,13 +9,17 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="CẤU HÌNH TRỌNG SỐ ƯU TIÊN (PRIORITY RULES)" FontSize="16" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,10"/>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="CẤU HÌNH TRỌNG SỐ ƯU TIÊN (PRIORITY RULES)" FontSize="16" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" VerticalAlignment="Center"/>
+            <Button Content="Thêm Quy Tắc" Margin="20,0,0,0" Padding="10,5" Click="BtnAdd_Click"/>
+            <Button Content="Xóa Quy Tắc" Margin="5,0,0,0" Padding="10,5" Background="DarkRed" Foreground="White" Click="BtnDelete_Click"/>
+        </StackPanel>
 
         <DataGrid x:Name="dgRules" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" BorderBrush="{StaticResource BorderBrush}">
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Header="Bật/Tắt" Binding="{Binding IsActive}" Width="80"/>
-                <DataGridTextColumn Header="Mã Quy tắc" Binding="{Binding RuleCode}" Width="200" IsReadOnly="True" Foreground="Gray"/>
-                <DataGridTextColumn Header="Tên Quy tắc" Binding="{Binding RuleName}" Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Mã Quy tắc" Binding="{Binding RuleCode}" Width="200" IsReadOnly="False" Foreground="Black"/>
+                <DataGridTextColumn Header="Tên Quy tắc" Binding="{Binding RuleName}" Width="*" IsReadOnly="False"/>
 
                 <DataGridTextColumn Header="Điểm Ưu Tiên (1-100)" Binding="{Binding PriorityScore}" Width="150">
                     <DataGridTextColumn.ElementStyle>
