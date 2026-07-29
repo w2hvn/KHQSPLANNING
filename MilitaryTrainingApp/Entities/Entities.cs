@@ -14,6 +14,30 @@ namespace MilitaryTrainingApp.Entities
 
         public ICollection<PlanTarget> PlanTargets { get; set; } = new List<PlanTarget>();
         public ICollection<TimeNode> TimeNodes { get; set; } = new List<TimeNode>();
+        public ICollection<BlackoutDate> BlackoutDates { get; set; } = new List<BlackoutDate>();
+        public ICollection<SchedulingPriorityRule> SchedulingPriorityRules { get; set; } = new List<SchedulingPriorityRule>();
+    }
+
+    public class BlackoutDate
+    {
+        public int Id { get; set; }
+        public int PlanId { get; set; }
+        public Plan Plan { get; set; } = null!;
+        public string HolidayName { get; set; } = null!;
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public string? Description { get; set; }
+    }
+
+    public class SchedulingPriorityRule
+    {
+        public int Id { get; set; }
+        public int PlanId { get; set; }
+        public Plan Plan { get; set; } = null!;
+        public string RuleCode { get; set; } = null!;
+        public string RuleName { get; set; } = null!;
+        public int PriorityScore { get; set; } = 50;
+        public bool IsActive { get; set; } = true;
     }
 
     public class TrainingTarget

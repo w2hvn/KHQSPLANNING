@@ -275,6 +275,57 @@ namespace MilitaryTrainingApp.Views
             }
         }
 
+        private void BtnBlackoutDate_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentPlanId <= 0)
+            {
+                MessageBox.Show("Vui lòng chọn Kế hoạch trước.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            var win = new BlackoutDateWindow(_currentPlanId);
+            win.ShowDialog();
+        }
+
+        private void BtnPriorityRule_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentPlanId <= 0)
+            {
+                MessageBox.Show("Vui lòng chọn Kế hoạch trước.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            var win = new PriorityRuleConfigWindow(_currentPlanId);
+            win.ShowDialog();
+        }
+
+        private async void BtnAutoSchedule_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentPlanId <= 0 || _selectedTimeNode == null || !_childTimeNodes.Any() || !_rowItems.Any())
+            {
+                MessageBox.Show("Không có dữ liệu hợp lệ (cần chọn Cấp thời gian và nạp lưới phân bổ) để chạy xếp lịch tự động.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var result = MessageBox.Show("Thuật toán sẽ tự động chia lại Quỹ thời gian Còn lại vào lưới hiện tại.\nDữ liệu hiện tại trên lưới sẽ bị ghi đè. Bạn có chắc chắn muốn chạy Engine?", "Xác nhận Xếp Lịch", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    using var db = new AppDbContext();
+
+                    // Lấy TimeNode Entities để tính Start/EndDate cho việc bù trừ ngày nghỉ lễ
+                    var childIds = _childTimeNodes.Select(c => c.Id).ToList();
+                    var childEntities = await db.TimeNodes.Where(tn => childIds.Contains(tn.Id)).ToListAsync();
+
+                    // Chạy Auto Schedule Engine
+                    MilitaryTrainingApp.Helpers.AutoScheduleEngine.RunEngine(_currentPlanId, _childTimeNodes, _rowItems, childEntities, db);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi thực thi Engine Xếp Lịch: {ex.Message}", "Lỗi Ngiêm Trọng", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
         private async void BtnSaveAllocation_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedTimeNode == null || !_childTimeNodes.Any() || !_rowItems.Any())

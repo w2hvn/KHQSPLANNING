@@ -13,6 +13,8 @@ namespace MilitaryTrainingApp.Entities
         public DbSet<TimeNode> TimeNodes { get; set; } = null!;
         public DbSet<TimeAllocation> TimeAllocations { get; set; } = null!;
         public DbSet<ProgramNodeDecor> ProgramNodeDecors { get; set; } = null!;
+        public DbSet<BlackoutDate> BlackoutDates { get; set; } = null!;
+        public DbSet<SchedulingPriorityRule> SchedulingPriorityRules { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -156,6 +158,32 @@ namespace MilitaryTrainingApp.Entities
                 entity.HasOne(e => e.ProgramNode)
                       .WithOne(pn => pn.Decor)
                       .HasForeignKey<ProgramNodeDecor>(e => e.ProgramNodeId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<BlackoutDate>(entity =>
+            {
+                entity.ToTable("blackout_date");
+                entity.Property(e => e.HolidayName).HasMaxLength(255);
+                entity.Property(e => e.Description).HasMaxLength(500);
+
+                entity.HasOne(e => e.Plan)
+                      .WithMany(p => p.BlackoutDates)
+                      .HasForeignKey(e => e.PlanId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<SchedulingPriorityRule>(entity =>
+            {
+                entity.ToTable("scheduling_priority_rule");
+                entity.Property(e => e.RuleCode).HasMaxLength(50);
+                entity.Property(e => e.RuleName).HasMaxLength(255);
+                entity.Property(e => e.PriorityScore).HasDefaultValue(50);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+
+                entity.HasOne(e => e.Plan)
+                      .WithMany(p => p.SchedulingPriorityRules)
+                      .HasForeignKey(e => e.PlanId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
         }

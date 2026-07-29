@@ -1,0 +1,35 @@
+<Window x:Class="MilitaryTrainingApp.Views.PriorityRuleConfigWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cấu hình Trọng số Ưu tiên (Priority Rules)" Height="450" Width="600" WindowStartupLocation="CenterOwner" Background="{StaticResource BackgroundBrush}">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="DANH SÁCH QUY TẮC XẾP LỊCH TỰ ĐỘNG" FontSize="16" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,10"/>
+
+        <DataGrid x:Name="dgRules" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Header="Bật/Tắt" Binding="{Binding IsActive}" Width="60"/>
+                <DataGridTextColumn Header="Tên Quy tắc" Binding="{Binding RuleName}" Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Mã Quy tắc" Binding="{Binding RuleCode}" Width="120" IsReadOnly="True" Foreground="Gray"/>
+                <DataGridTextColumn Header="Điểm Ưu Tiên (1-100)" Binding="{Binding PriorityScore}" Width="130">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Hủy bỏ" Width="100" Margin="0,0,10,0" Background="Gray" Click="BtnCancel_Click"/>
+            <Button Content="Lưu Thay Đổi" Width="120" Background="{StaticResource AccentBrush}" FontWeight="Bold" Click="BtnSave_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

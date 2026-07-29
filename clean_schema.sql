@@ -1,5 +1,3 @@
-CREATE DATABASE IF NOT EXISTS military_training_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE military_training_db;
 
 CREATE TABLE plan (
     id INT AUTO_INCREMENT PRIMARY KEY,

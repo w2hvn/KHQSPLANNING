@@ -1,0 +1,28 @@
+<Window x:Class="MilitaryTrainingApp.Views.BlackoutDateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Quản lý Ngày Nghỉ Lễ (Blackout Dates)" Height="450" Width="600" WindowStartupLocation="CenterOwner" Background="{StaticResource BackgroundBrush}">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="DANH SÁCH NGÀY NGHỈ LỄ BẮT BUỘC" FontSize="16" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,10"/>
+
+        <DataGrid x:Name="dgBlackoutDates" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Tên Nghỉ Lễ (VD: Tết)" Binding="{Binding HolidayName}" Width="*"/>
+                <DataGridTextColumn Header="Từ ngày (yyyy-MM-dd)" Binding="{Binding StartDate, StringFormat=yyyy-MM-dd}" Width="130"/>
+                <DataGridTextColumn Header="Đến ngày (yyyy-MM-dd)" Binding="{Binding EndDate, StringFormat=yyyy-MM-dd}" Width="130"/>
+                <DataGridTextColumn Header="Ghi chú" Binding="{Binding Description}" Width="150"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Hủy bỏ" Width="100" Margin="0,0,10,0" Background="Gray" Click="BtnCancel_Click"/>
+            <Button Content="Lưu Thay Đổi" Width="120" Background="{StaticResource AccentBrush}" FontWeight="Bold" Click="BtnSave_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
