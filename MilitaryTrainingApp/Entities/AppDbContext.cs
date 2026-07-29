@@ -103,6 +103,11 @@ namespace MilitaryTrainingApp.Entities
                       .WithMany(nt => nt.ProgramNodes)
                       .HasForeignKey(e => e.NodeTypeId)
                       .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.PrerequisiteNode)
+                      .WithMany()
+                      .HasForeignKey(e => e.PrerequisiteNodeId)
+                      .OnDelete(DeleteBehavior.SetNull);
             });
 
             modelBuilder.Entity<TimeNode>(entity =>

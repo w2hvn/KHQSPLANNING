@@ -1,5 +1,3 @@
-CREATE DATABASE IF NOT EXISTS military_training_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE military_training_db;
 
 CREATE TABLE plan (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -51,9 +49,15 @@ CREATE TABLE program_node (
     level INT DEFAULT 1,
     tree_path VARCHAR(500),
     sort_order INT,
+    complexity_level INT DEFAULT 1 COMMENT '1: Cơ bản, 2: Nâng cao',
+    is_night_training BOOLEAN DEFAULT FALSE COMMENT 'Huấn luyện đêm',
+    is_outdoor BOOLEAN DEFAULT FALSE COMMENT 'Ngoài thao trường',
+    is_heavy_physical BOOLEAN DEFAULT FALSE COMMENT 'Thể lực nặng',
+    prerequisite_node_id INT DEFAULT NULL COMMENT 'ID bài tiên quyết',
     FOREIGN KEY (plan_target_id) REFERENCES plan_target(id) ON DELETE CASCADE,
     FOREIGN KEY (parent_id) REFERENCES program_node(id) ON DELETE CASCADE,
-    FOREIGN KEY (node_type_id) REFERENCES program_node_type(id)
+    FOREIGN KEY (node_type_id) REFERENCES program_node_type(id),
+    FOREIGN KEY (prerequisite_node_id) REFERENCES program_node(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE time_node (

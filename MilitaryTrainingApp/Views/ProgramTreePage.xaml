@@ -93,6 +93,40 @@
                     <TextBox x:Name="txtCapacity" Grid.Column="1" ToolTip="Nhập số thập phân (VD: 40.5)"/>
                 </Grid>
 
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Độ Phức Tạp:" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    <ComboBox x:Name="cboComplexityLevel" Grid.Column="1">
+                        <ComboBoxItem Content="1 - Cơ bản (GĐ1/Tháng đầu)" Tag="1"/>
+                        <ComboBoxItem Content="2 - Nâng cao (GĐ2/Tháng cuối)" Tag="2"/>
+                    </ComboBox>
+                </Grid>
+
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Thuộc Tính Bổ Sung:" VerticalAlignment="Top" FontWeight="SemiBold"/>
+                    <StackPanel Grid.Column="1">
+                        <CheckBox x:Name="chkIsNightTraining" Content="Bài huấn luyện đêm" Margin="0,0,0,5"/>
+                        <CheckBox x:Name="chkIsOutdoor" Content="Huấn luyện ngoài thao trường/bãi tập" Margin="0,0,0,5"/>
+                        <CheckBox x:Name="chkIsHeavyPhysical" Content="Huấn luyện thể lực nặng" Margin="0,0,0,5"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Bài Tiền Đề:" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    <ComboBox x:Name="cboPrerequisiteNode" Grid.Column="1" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+                </Grid>
+
                 <!-- Cấu hình Trang trí (Dành cho Môn học - Level 1) -->
                 <GroupBox Header="Cấu hình Trang trí (Chỉ áp dụng cho Môn học)" BorderBrush="{StaticResource BorderBrush}" Margin="0,0,0,20">
                     <StackPanel Margin="10">

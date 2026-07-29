@@ -97,6 +97,13 @@ namespace MilitaryTrainingApp.Entities
         public string? TreePath { get; set; }
         public int? SortOrder { get; set; }
 
+        public int ComplexityLevel { get; set; } = 1;
+        public bool IsNightTraining { get; set; } = false;
+        public bool IsOutdoor { get; set; } = false;
+        public bool IsHeavyPhysical { get; set; } = false;
+        public int? PrerequisiteNodeId { get; set; }
+
+        public ProgramNode? PrerequisiteNode { get; set; }
         public ProgramNodeDecor? Decor { get; set; }
         public ICollection<ProgramNode> Children { get; set; } = new List<ProgramNode>();
         public ICollection<TimeAllocation> TimeAllocations { get; set; } = new List<TimeAllocation>();

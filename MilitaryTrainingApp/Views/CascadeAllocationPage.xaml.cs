@@ -20,6 +20,7 @@ namespace MilitaryTrainingApp.Views
         private TimeTreeNodeItem? _selectedTimeNode = null;
         private List<TimeTreeNodeItem> _childTimeNodes = new List<TimeTreeNodeItem>();
         private List<AllocationRowItem> _rowItems = new List<AllocationRowItem>();
+        private System.Collections.ObjectModel.ObservableCollection<ConflictLogItem> _conflictLogs = new System.Collections.ObjectModel.ObservableCollection<ConflictLogItem>();
 
         public CascadeAllocationPage()
         {
@@ -63,6 +64,9 @@ namespace MilitaryTrainingApp.Views
                 _rowItems.Clear();
                 dgAllocation.ItemsSource = null;
                 ClearDynamicColumns();
+
+                _conflictLogs.Clear();
+                lstConflictLogs.ItemsSource = _conflictLogs;
             }
             catch (Exception ex)
             {
@@ -310,18 +314,53 @@ namespace MilitaryTrainingApp.Views
             {
                 try
                 {
+                    _conflictLogs.Clear();
+
                     using var db = new AppDbContext();
+                    var strategy = MilitaryTrainingApp.Services.Scheduling.AllocationEngineFactory.GetStrategy(_selectedTimeNode.NodeTypeName); // node type code needed
 
-                    // Lấy TimeNode Entities để tính Start/EndDate cho việc bù trừ ngày nghỉ lễ
-                    var childIds = _childTimeNodes.Select(c => c.Id).ToList();
-                    var childEntities = await db.TimeNodes.Where(tn => childIds.Contains(tn.Id)).ToListAsync();
+                    // Lấy TimeNode Entities gốc để query chính xác TimeNodeLevel Code
+                    var parentNodeEntity = await db.TimeNodes.Include(t => t.NodeType).FirstOrDefaultAsync(t => t.Id == _selectedTimeNode.Id);
+                    if (parentNodeEntity == null) return;
 
-                    // Chạy Auto Schedule Engine
-                    MilitaryTrainingApp.Helpers.AutoScheduleEngine.RunEngine(_currentPlanId, _childTimeNodes, _rowItems, childEntities, db);
+                    strategy = MilitaryTrainingApp.Services.Scheduling.AllocationEngineFactory.GetStrategy(parentNodeEntity.NodeType.Code);
+
+                    // Chạy Auto Schedule Engine (Bất đồng bộ trên Background Thread để UI không bị block)
+                    await Task.Run(async () =>
+                    {
+                        using var backgroundDb = new AppDbContext();
+                        await strategy.ExecuteAsync(
+                            _currentPlanId,
+                            _currentPlanTargetId,
+                            parentNodeEntity,
+                            _childTimeNodes,
+                            _rowItems,
+                            (logItem) =>
+                            {
+                                Dispatcher.Invoke(() => _conflictLogs.Add(logItem));
+                            },
+                            backgroundDb,
+                            System.Threading.CancellationToken.None);
+                    });
+
+                    MessageBox.Show("Hoàn tất chạy Thuật toán Xếp lịch Tự động!", "Auto-Schedule Engine", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Lỗi thực thi Engine Xếp Lịch: {ex.Message}", "Lỗi Ngiêm Trọng", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void LstConflictLogs_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (lstConflictLogs.SelectedItem is ConflictLogItem log)
+            {
+                var row = _rowItems.FirstOrDefault(r => r.ProgramNodeId == log.ProgramNodeId);
+                if (row != null)
+                {
+                    dgAllocation.ScrollIntoView(row);
+                    dgAllocation.SelectedItem = row;
                 }
             }
         }
@@ -423,6 +462,14 @@ namespace MilitaryTrainingApp.Views
         public string ProgramName { get; set; } = string.Empty;
         public int Level { get; set; }
 
+        public int ComplexityLevel { get; set; } = 1;
+        public bool IsNightTraining { get; set; } = false;
+        public bool IsOutdoor { get; set; } = false;
+        public bool IsHeavyPhysical { get; set; } = false;
+        public int? PrerequisiteNodeId { get; set; }
+
+        public bool IsHighlight { get; set; } = false;
+
         public string BgColorHex { get; set; } = "#FFFFFF";
         public Brush BgBrush
         {
@@ -480,5 +527,12 @@ namespace MilitaryTrainingApp.Views
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    public class ConflictLogItem
+    {
+        public int ProgramNodeId { get; set; }
+        public string ProgramName { get; set; } = string.Empty;
+        public string Reason { get; set; } = string.Empty;
     }
 }
