@@ -132,7 +132,7 @@ namespace MilitaryTrainingApp.Services.Scheduling
 
                     // PHÂN VÂN VI MÔ: Rất nhiều môn cùng điểm ưu tiên đòi giành Slot hiện tại
                     // => Áp dụng luật Resolver
-                    if (sameScoreCompetitors.Any() && childTimeNodes.Count >= 2)
+                    if (sameScoreCompetitors.Any() && currentSlot.Value <= row.RemainingBudget)
                     {
                         row.IsHighlight = true;
 

@@ -1,8 +1,8 @@
-<Window x:Class="MilitaryTrainingApp.Views.SystemConfig.SystemConfigWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:MilitaryTrainingApp.Views.SystemConfig"
-        Title="Quản lý Cấu hình Hệ thống (System Config Hub)" Height="600" Width="800" WindowStartupLocation="CenterOwner" Background="{StaticResource BackgroundBrush}">
+<Page x:Class="MilitaryTrainingApp.Views.SystemConfig.SystemConfigHubPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="clr-namespace:MilitaryTrainingApp.Views.SystemConfig"
+      Title="Quản lý Cấu hình Hệ thống" Background="{StaticResource BackgroundBrush}">
     <Grid Margin="10">
         <TabControl x:Name="tabControl" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
             <TabItem Header="Định Mức Đối Tượng">
@@ -16,4 +16,4 @@
             </TabItem>
         </TabControl>
     </Grid>
-</Window>
+</Page>

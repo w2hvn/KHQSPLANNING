@@ -102,7 +102,6 @@ namespace MilitaryTrainingApp.Views
                 {
                     using var db = new AppDbContext();
 
-                    // 1. Lấy danh sách các TimeNode CON trực tiếp
                     var childNodes = await db.TimeNodes
                         .Include(tn => tn.NodeType)
                         .Where(tn => tn.ParentId == _selectedTimeNode.Id)
@@ -125,10 +124,7 @@ namespace MilitaryTrainingApp.Views
                         txtChildLevelName.Text = "(Không có nhánh con)";
                     }
 
-                    // 2. Build Cột Động cho DataGrid
                     BuildDynamicColumns();
-
-                    // 3. Tải danh sách Bài Học và tính toán Ngân sách
                     await LoadProgramNodesAndAllocations(db);
                 }
                 catch (Exception ex)
@@ -171,7 +167,6 @@ namespace MilitaryTrainingApp.Views
         {
             if (_selectedTimeNode == null) return;
 
-            // Lấy toàn bộ cây bài học của PlanTarget này
             var allProgramNodes = await db.ProgramNodes
                 .Include(pn => pn.Decor)
                 .Where(pn => pn.PlanTargetId == _currentPlanTargetId)
@@ -180,12 +175,10 @@ namespace MilitaryTrainingApp.Views
 
             var validRowItems = new List<AllocationRowItem>();
 
-            // Nếu TimeNode Cha đang chọn ở Level 1 (NĂM) -> Hạn mức lấy từ Capacity của ProgramNode
             if (_selectedTimeNode.Level == 1)
             {
                 foreach (var pn in allProgramNodes)
                 {
-                    // Lấy môn học có Capacity > 0, hoặc nút con có Capacity > 0 (nhưng yêu cầu quy định Root luôn hiển thị làm context)
                     if (pn.Level == 1 || pn.Capacity > 0)
                     {
                         validRowItems.Add(new AllocationRowItem
@@ -200,14 +193,13 @@ namespace MilitaryTrainingApp.Views
                             IsHeavyPhysical = pn.IsHeavyPhysical,
                             PrerequisiteNodeId = pn.PrerequisiteNodeId,
                             BgColorHex = pn.Decor?.BgColorHex ?? "#FFFFFF",
-                            ParentMaxBudget = pn.Capacity // Nguồn ngân sách gốc
+                            ParentMaxBudget = pn.Capacity
                         });
                     }
                 }
             }
             else
             {
-                // Nếu TimeNode Cha ở Level > 1 -> Hạn mức lấy từ TimeAllocation của Node Cha này
                 var parentAllocations = await db.TimeAllocations
                     .Where(ta => ta.TimeNodeId == _selectedTimeNode.Id && ta.AllocatedHours > 0)
                     .ToListAsync();
@@ -216,7 +208,6 @@ namespace MilitaryTrainingApp.Views
 
                 foreach (var pn in allProgramNodes)
                 {
-                    // Luôn giữ Root (Level 1) làm Context, HOẶC bài học đó đã được phân bổ giờ vào TimeNode Cha
                     if (pn.Level == 1 || allocatedProgramIds.Contains(pn.Id))
                     {
                         decimal maxBudget = 0;
@@ -244,7 +235,6 @@ namespace MilitaryTrainingApp.Views
                 }
             }
 
-            // Tiếp theo, lấy các bản ghi phân bổ ĐÃ CÓ cho các TimeNode CON
             var childTimeNodeIds = _childTimeNodes.Select(c => c.Id).ToList();
             if (childTimeNodeIds.Any())
             {
@@ -271,7 +261,6 @@ namespace MilitaryTrainingApp.Views
 
         private void DgAllocation_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            // Update bindings immediately
             if (e.EditingElement is TextBox textBox && e.Row.Item is AllocationRowItem row)
             {
                 var bindingExpression = textBox.GetBindingExpression(TextBox.TextProperty);
@@ -279,7 +268,6 @@ namespace MilitaryTrainingApp.Views
                 {
                     bindingExpression.UpdateSource();
 
-                    // Logic Kiểm Tra Realtime
                     if (row.TotalAllocatedToChildren > row.ParentMaxBudget)
                     {
                         MessageBox.Show($"Tổng thời gian phân bổ ({row.TotalAllocatedToChildren}h) cho bài '{row.ProgramName}' vượt quá hạn mức cấp cha ({row.ParentMaxBudget}h)!",
@@ -287,17 +275,6 @@ namespace MilitaryTrainingApp.Views
                     }
                 }
             }
-        }
-
-        private void BtnSystemConfig_Click(object sender, RoutedEventArgs e)
-        {
-            if (_currentPlanId <= 0)
-            {
-                MessageBox.Show("Vui lòng chọn Kế hoạch trước.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            var win = new SystemConfig.SystemConfigWindow(_currentPlanId);
-            win.ShowDialog();
         }
 
         private async void BtnAutoSchedule_Click(object sender, RoutedEventArgs e)
@@ -316,15 +293,13 @@ namespace MilitaryTrainingApp.Views
                     _conflictLogs.Clear();
 
                     using var db = new AppDbContext();
-                    var strategy = MilitaryTrainingApp.Services.Scheduling.AllocationEngineFactory.GetStrategy(_selectedTimeNode.NodeTypeName); // node type code needed
+                    var strategy = MilitaryTrainingApp.Services.Scheduling.AllocationEngineFactory.GetStrategy(_selectedTimeNode.NodeTypeName);
 
-                    // Lấy TimeNode Entities gốc để query chính xác TimeNodeLevel Code
                     var parentNodeEntity = await db.TimeNodes.Include(t => t.NodeType).FirstOrDefaultAsync(t => t.Id == _selectedTimeNode.Id);
                     if (parentNodeEntity == null) return;
 
                     strategy = MilitaryTrainingApp.Services.Scheduling.AllocationEngineFactory.GetStrategy(parentNodeEntity.NodeType.Code);
 
-                    // Chạy Auto Schedule Engine (Bất đồng bộ trên Background Thread để UI không bị block)
                     await Task.Run(async () =>
                     {
                         using var backgroundDb = new AppDbContext();
@@ -364,7 +339,6 @@ namespace MilitaryTrainingApp.Views
                 {
                     dgAllocation.ScrollIntoView(row);
                     dgAllocation.SelectedItem = row;
-                    // Optional: You can explicitly set focus to the grid if desired
                     dgAllocation.Focus();
                 }
             }
@@ -378,7 +352,6 @@ namespace MilitaryTrainingApp.Views
                 return;
             }
 
-            // Kiểm tra validate trước khi lưu (tránh lưu nếu bị âm ngân sách)
             var errors = _rowItems.Where(r => r.RemainingBudget < 0).ToList();
             if (errors.Any())
             {
@@ -394,7 +367,6 @@ namespace MilitaryTrainingApp.Views
                 var childTimeNodeIds = _childTimeNodes.Select(c => c.Id).ToList();
                 var programNodeIds = _rowItems.Select(r => r.ProgramNodeId).ToList();
 
-                // Tải tất cả bản ghi phân bổ hiện tại của các ô trên lưới
                 var existingAllocations = await db.TimeAllocations
                     .Where(ta => childTimeNodeIds.Contains(ta.TimeNodeId) && programNodeIds.Contains(ta.ProgramNodeId))
                     .ToListAsync();
@@ -410,7 +382,6 @@ namespace MilitaryTrainingApp.Views
 
                         if (allocatedHours == 0)
                         {
-                            // ZERO-VALUE ELIMINATION: Nếu value = 0 và đã có trong DB thì XÓA
                             if (existingRecord != null)
                             {
                                 db.TimeAllocations.Remove(existingRecord);
@@ -418,7 +389,6 @@ namespace MilitaryTrainingApp.Views
                         }
                         else
                         {
-                            // UPSERT
                             if (existingRecord != null)
                             {
                                 existingRecord.AllocatedHours = allocatedHours;
@@ -439,7 +409,6 @@ namespace MilitaryTrainingApp.Views
                 await db.SaveChangesAsync();
                 MessageBox.Show("Lưu phân bổ thời gian thành công!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // Load lại để đồng bộ state hoàn hảo
                 await LoadProgramNodesAndAllocations(db);
             }
             catch (Exception ex)

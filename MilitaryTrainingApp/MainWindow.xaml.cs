@@ -13,6 +13,11 @@ namespace MilitaryTrainingApp
         private TrainingTargetPage _trainingTargetPage;
         private TimeTreeManagementPage _timeTreeManagementPage;
 
+        private ProgressReportPage _progressReportPage;
+        private ExcelExportPage _excelExportPage;
+        private Views.SystemConfig.SystemConfigHubPage _systemConfigHubPage;
+
+        private int _currentPlanId = 0;
         private int _currentPlanTargetId = 0;
         private int? _currentTimeNodeId = null;
 
@@ -29,6 +34,10 @@ namespace MilitaryTrainingApp
             _trainingTargetPage = new TrainingTargetPage();
             _timeTreeManagementPage = new TimeTreeManagementPage();
 
+            _progressReportPage = new ProgressReportPage();
+            _excelExportPage = new ExcelExportPage();
+            _systemConfigHubPage = new Views.SystemConfig.SystemConfigHubPage();
+
             // Lắng nghe sự kiện từ HeaderControl
             TopHeaderControl.GlobalContextChanged += TopHeaderControl_GlobalContextChanged;
 
@@ -38,46 +47,68 @@ namespace MilitaryTrainingApp
 
         private void TopHeaderControl_GlobalContextChanged(object? sender, Controls.GlobalContextEventArgs e)
         {
+            _currentPlanId = e.PlanId;
             _currentPlanTargetId = e.PlanTargetId;
             _currentTimeNodeId = e.TimeNodeId;
 
-            // Fix WPF Navigation Lifecycle: Trực tiếp gọi hàm trên instance của trang
+            // Cập nhật dữ liệu cho các trang (Pages)
             _programTreePage.RefreshData(_currentPlanTargetId);
-            _cascadeAllocationPage.RefreshData(_currentPlanTargetId);
+            _cascadeAllocationPage.RefreshData(_currentPlanTargetId); // Nếu muốn lọc sâu hơn, có thể truyền thêm _currentTimeNodeId vào đây trong tương lai.
             _timelineReportPage.RefreshData(_currentPlanTargetId);
 
-            // Lưu ý: Các Page bên dưới sẽ cần cập nhật sau nếu muốn xài TimeNodeId để lọc sâu hơn
-            // Hiện tại ta chỉ cập nhật anchor _currentPlanTargetId cho chúng như cũ.
+            // Cập nhật Hub Cấu hình
+            _systemConfigHubPage.RefreshData(_currentPlanId);
         }
 
-        private void BtnProgramTree_Click(object sender, RoutedEventArgs e)
-        {
-            mainFrame.Navigate(_programTreePage);
-        }
+        // --- SIDEBAR NAVIGATION HANDLERS ---
 
-        private void BtnCascade_Click(object sender, RoutedEventArgs e)
-        {
-            mainFrame.Navigate(_cascadeAllocationPage);
-        }
-
-        private void BtnTimelineReport_Click(object sender, RoutedEventArgs e)
-        {
-            mainFrame.Navigate(_timelineReportPage);
-        }
-
-        private void BtnPlanManagement_Click(object sender, RoutedEventArgs e)
+        // NHÓM 1
+        private void Nav_PlanManagement_Click(object sender, RoutedEventArgs e)
         {
             mainFrame.Navigate(_planManagementPage);
         }
 
-        private void BtnTrainingTarget_Click(object sender, RoutedEventArgs e)
+        private void Nav_TrainingTarget_Click(object sender, RoutedEventArgs e)
         {
             mainFrame.Navigate(_trainingTargetPage);
         }
 
-        private void BtnTimeTree_Click(object sender, RoutedEventArgs e)
+        private void Nav_TimeTree_Click(object sender, RoutedEventArgs e)
         {
             mainFrame.Navigate(_timeTreeManagementPage);
+        }
+
+        private void Nav_ProgramTree_Click(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(_programTreePage);
+        }
+
+        // NHÓM 2
+        private void Nav_CascadeAllocation_Click(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(_cascadeAllocationPage);
+        }
+
+        // NHÓM 3
+        private void Nav_TimelineReport_Click(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(_timelineReportPage);
+        }
+
+        private void Nav_ProgressReport_Click(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(_progressReportPage);
+        }
+
+        private void Nav_ExcelExport_Click(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(_excelExportPage);
+        }
+
+        // NHÓM 4
+        private void Nav_SystemConfig_Click(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(_systemConfigHubPage);
         }
     }
 }

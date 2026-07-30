@@ -74,7 +74,6 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <Button Content="⚙️ Cấu Hình Hệ Thống" Margin="0,0,10,0" Click="BtnSystemConfig_Click" Background="LightGray" Foreground="Black" FontWeight="Bold" Padding="10,5"/>
                         <Button Content="⚡ TỰ ĐỘNG XẾP LỊCH" Click="BtnAutoSchedule_Click" Background="{StaticResource AccentBrush}" Foreground="White" FontWeight="Bold" Padding="10,5"/>
                     </StackPanel>
                 </Grid>
