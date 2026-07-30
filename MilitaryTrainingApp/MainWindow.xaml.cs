@@ -53,7 +53,7 @@ namespace MilitaryTrainingApp
 
             // Cập nhật dữ liệu cho các trang (Pages)
             _programTreePage.RefreshData(_currentPlanTargetId);
-            _cascadeAllocationPage.RefreshData(_currentPlanTargetId); // Nếu muốn lọc sâu hơn, có thể truyền thêm _currentTimeNodeId vào đây trong tương lai.
+            _cascadeAllocationPage.RefreshData(_currentPlanTargetId, _currentTimeNodeId);
             _timelineReportPage.RefreshData(_currentPlanTargetId);
 
             // Cập nhật Hub Cấu hình
