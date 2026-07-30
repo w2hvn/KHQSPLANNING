@@ -14,6 +14,7 @@ namespace MilitaryTrainingApp
         private TimeTreeManagementPage _timeTreeManagementPage;
 
         private int _currentPlanTargetId = 0;
+        private int? _currentTimeNodeId = null;
 
         public MainWindow()
         {
@@ -29,20 +30,24 @@ namespace MilitaryTrainingApp
             _timeTreeManagementPage = new TimeTreeManagementPage();
 
             // Lắng nghe sự kiện từ HeaderControl
-            TopHeaderControl.OnPlanTargetChanged += TopHeaderControl_OnPlanTargetChanged;
+            TopHeaderControl.GlobalContextChanged += TopHeaderControl_GlobalContextChanged;
 
             // Trang mặc định lúc mới khởi chạy
             mainFrame.Navigate(_programTreePage);
         }
 
-        private void TopHeaderControl_OnPlanTargetChanged(object? sender, int planTargetId)
+        private void TopHeaderControl_GlobalContextChanged(object? sender, Controls.GlobalContextEventArgs e)
         {
-            _currentPlanTargetId = planTargetId;
+            _currentPlanTargetId = e.PlanTargetId;
+            _currentTimeNodeId = e.TimeNodeId;
 
             // Fix WPF Navigation Lifecycle: Trực tiếp gọi hàm trên instance của trang
             _programTreePage.RefreshData(_currentPlanTargetId);
             _cascadeAllocationPage.RefreshData(_currentPlanTargetId);
             _timelineReportPage.RefreshData(_currentPlanTargetId);
+
+            // Lưu ý: Các Page bên dưới sẽ cần cập nhật sau nếu muốn xài TimeNodeId để lọc sâu hơn
+            // Hiện tại ta chỉ cập nhật anchor _currentPlanTargetId cho chúng như cũ.
         }
 
         private void BtnProgramTree_Click(object sender, RoutedEventArgs e)

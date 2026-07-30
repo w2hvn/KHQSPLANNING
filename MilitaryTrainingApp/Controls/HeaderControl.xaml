@@ -5,22 +5,25 @@
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Kế hoạch Section -->
-        <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0,0,20,0">
-            <TextBlock Text="KẾ HOẠCH NĂM:" Foreground="White" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
-            <ComboBox x:Name="cboPlans" Width="250" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="CboPlans_SelectionChanged"/>
+        <StackPanel Grid.Column="0" Orientation="Horizontal">
+            <TextBlock Text="KẾ HOẠCH:" Foreground="White" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,5,0"/>
+            <ComboBox x:Name="cboPlan" Width="200" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="CboPlan_SelectionChanged"/>
         </StackPanel>
 
-        <!-- Đối tượng huấn luyện Section -->
-        <TabControl x:Name="lstPlanTargets" Grid.Column="1" Background="Transparent" BorderThickness="0" SelectionChanged="LstPlanTargets_SelectionChanged">
-            <TabControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding DisplayText}" FontWeight="SemiBold" Padding="10,5"/>
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-        </TabControl>
+        <StackPanel Grid.Column="2" Orientation="Horizontal">
+            <TextBlock Text="ĐỐI TƯỢNG:" Foreground="White" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,5,0"/>
+            <ComboBox x:Name="cboTarget" Width="200" DisplayMemberPath="DisplayText" SelectedValuePath="PlanTargetId" SelectionChanged="CboTarget_SelectionChanged"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="4" Orientation="Horizontal">
+            <TextBlock Text="NGỮ CẢNH T.GIAN:" Foreground="White" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,5,0"/>
+            <ComboBox x:Name="cboActiveTimeNode" Width="350" DisplayMemberPath="DisplayText" SelectedValuePath="TimeNodeId" SelectionChanged="CboActiveTimeNode_SelectionChanged" FontFamily="Consolas, Courier New"/>
+        </StackPanel>
     </Grid>
 </UserControl>
