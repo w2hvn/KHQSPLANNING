@@ -102,12 +102,14 @@ namespace MilitaryTrainingApp.Entities
         public string? TreePath { get; set; }
         public int? SortOrder { get; set; }
 
-        public int ComplexityLevel { get; set; } = 1;
+        public int ComplexityLevel { get; set; } = 0;
         public bool IsNightTraining { get; set; } = false;
         public bool IsOutdoor { get; set; } = false;
         public bool IsHeavyPhysical { get; set; } = false;
         public int? PrerequisiteNodeId { get; set; }
+        public int? TimeNodeId { get; set; }
 
+        public virtual TimeNode? TimeNode { get; set; }
         public ProgramNode? PrerequisiteNode { get; set; }
         public ProgramNodeDecor? Decor { get; set; }
         public ICollection<ProgramNode> Children { get; set; } = new List<ProgramNode>();
@@ -130,6 +132,9 @@ namespace MilitaryTrainingApp.Entities
         public int Level { get; set; } = 1;
         public string? TreePath { get; set; }
         public int? SortOrder { get; set; }
+
+        public bool IsManual { get; set; } = false;
+        public bool IsLocked { get; set; } = false;
 
         public ICollection<TimeNode> Children { get; set; } = new List<TimeNode>();
         public ICollection<TimeAllocation> TimeAllocations { get; set; } = new List<TimeAllocation>();

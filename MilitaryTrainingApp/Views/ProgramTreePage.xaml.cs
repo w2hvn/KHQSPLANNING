@@ -107,7 +107,7 @@ namespace MilitaryTrainingApp.Views
             cboNodeType.SelectedIndex = -1;
             txtCapacity.Text = "0";
 
-            cboComplexityLevel.SelectedIndex = 0;
+            cboComplexityLevel.SelectedIndex = 0; // "0 - None"
             chkIsNightTraining.IsChecked = false;
             chkIsOutdoor.IsChecked = false;
             chkIsHeavyPhysical.IsChecked = false;
@@ -181,7 +181,15 @@ namespace MilitaryTrainingApp.Views
                 txtCapacity.Text = node.Capacity.ToString("0.##");
 
                 // Thuộc tính bổ sung
-                cboComplexityLevel.SelectedValue = node.ComplexityLevel.ToString();
+                foreach (ComboBoxItem item in cboComplexityLevel.Items)
+                {
+                    if (item.Tag.ToString() == node.ComplexityLevel.ToString())
+                    {
+                        cboComplexityLevel.SelectedItem = item;
+                        break;
+                    }
+                }
+
                 chkIsNightTraining.IsChecked = node.IsNightTraining;
                 chkIsOutdoor.IsChecked = node.IsOutdoor;
                 chkIsHeavyPhysical.IsChecked = node.IsHeavyPhysical;
@@ -291,7 +299,7 @@ namespace MilitaryTrainingApp.Views
                         Code = txtCode.Text,
                         Name = txtName.Text,
                         Capacity = capacity,
-                        ComplexityLevel = int.Parse((cboComplexityLevel.SelectedValue as ComboBoxItem)?.Tag?.ToString() ?? "1"),
+                        ComplexityLevel = int.Parse((cboComplexityLevel.SelectedValue as ComboBoxItem)?.Tag?.ToString() ?? "0"),
                         IsNightTraining = chkIsNightTraining.IsChecked ?? false,
                         IsOutdoor = chkIsOutdoor.IsChecked ?? false,
                         IsHeavyPhysical = chkIsHeavyPhysical.IsChecked ?? false,
@@ -330,7 +338,7 @@ namespace MilitaryTrainingApp.Views
                         dbNode.NodeTypeId = (int)cboNodeType.SelectedValue;
                         dbNode.Capacity = capacity;
 
-                        dbNode.ComplexityLevel = int.Parse(((ComboBoxItem)cboComplexityLevel.SelectedItem)?.Tag?.ToString() ?? "1");
+                        dbNode.ComplexityLevel = int.Parse(((ComboBoxItem)cboComplexityLevel.SelectedItem)?.Tag?.ToString() ?? "0");
                         dbNode.IsNightTraining = chkIsNightTraining.IsChecked ?? false;
                         dbNode.IsOutdoor = chkIsOutdoor.IsChecked ?? false;
                         dbNode.IsHeavyPhysical = chkIsHeavyPhysical.IsChecked ?? false;

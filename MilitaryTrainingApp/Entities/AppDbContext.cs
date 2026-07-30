@@ -113,6 +113,11 @@ namespace MilitaryTrainingApp.Entities
                       .WithMany()
                       .HasForeignKey(e => e.PrerequisiteNodeId)
                       .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasOne(e => e.TimeNode)
+                      .WithMany()
+                      .HasForeignKey(e => e.TimeNodeId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<TimeNode>(entity =>
@@ -122,6 +127,9 @@ namespace MilitaryTrainingApp.Entities
                 entity.Property(e => e.Name).HasMaxLength(255);
                 entity.Property(e => e.Level).HasDefaultValue(1);
                 entity.Property(e => e.TreePath).HasMaxLength(500);
+
+                entity.Property(e => e.IsManual).HasDefaultValue(false);
+                entity.Property(e => e.IsLocked).HasDefaultValue(false);
 
                 entity.HasOne(e => e.Plan)
                       .WithMany(p => p.TimeNodes)

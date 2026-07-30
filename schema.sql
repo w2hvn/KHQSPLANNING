@@ -42,28 +42,6 @@ CREATE TABLE time_node_type (
     depth_level INT NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE program_node (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    plan_target_id INT NOT NULL,
-    parent_id INT,
-    node_type_id INT NOT NULL,
-    code VARCHAR(50),
-    name VARCHAR(255) NOT NULL,
-    capacity DECIMAL(8,2) DEFAULT 0.00,
-    level INT DEFAULT 1,
-    tree_path VARCHAR(500),
-    sort_order INT,
-    complexity_level INT DEFAULT 1 COMMENT '1: Cơ bản, 2: Nâng cao',
-    is_night_training BOOLEAN DEFAULT FALSE COMMENT 'Huấn luyện đêm',
-    is_outdoor BOOLEAN DEFAULT FALSE COMMENT 'Ngoài thao trường',
-    is_heavy_physical BOOLEAN DEFAULT FALSE COMMENT 'Thể lực nặng',
-    prerequisite_node_id INT DEFAULT NULL COMMENT 'ID bài tiên quyết',
-    FOREIGN KEY (plan_target_id) REFERENCES plan_target(id) ON DELETE CASCADE,
-    FOREIGN KEY (parent_id) REFERENCES program_node(id) ON DELETE CASCADE,
-    FOREIGN KEY (node_type_id) REFERENCES program_node_type(id),
-    FOREIGN KEY (prerequisite_node_id) REFERENCES program_node(id) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE time_node (
     id INT AUTO_INCREMENT PRIMARY KEY,
     plan_id INT NOT NULL,
@@ -76,9 +54,36 @@ CREATE TABLE time_node (
     level INT DEFAULT 1,
     tree_path VARCHAR(500),
     sort_order INT,
+    is_manual BOOLEAN DEFAULT FALSE COMMENT 'TRUE: Đã tạo/chỉnh sửa thủ công bởi cán bộ; FALSE: Sinh tự động từ Engine',
+    is_locked BOOLEAN DEFAULT FALSE COMMENT 'TRUE: Khóa mốc thời gian, Engine không được phép tính toán/đè lại',
     FOREIGN KEY (parent_id) REFERENCES time_node(id) ON DELETE CASCADE,
-    FOREIGN KEY (node_type_id) REFERENCES time_node_type(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    FOREIGN KEY (node_type_id) REFERENCES time_node_type(id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE program_node (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    plan_target_id INT NOT NULL,
+    parent_id INT,
+    node_type_id INT NOT NULL,
+    code VARCHAR(50),
+    name VARCHAR(255) NOT NULL,
+    capacity DECIMAL(8,2) DEFAULT 0.00,
+    level INT DEFAULT 1,
+    tree_path VARCHAR(500),
+    sort_order INT,
+    complexity_level INT DEFAULT 0 COMMENT '0: None/Không phân loại/Trung tính, 1: Cơ bản (GĐ1/Tháng đầu), 2: Nâng cao (GĐ2/Tháng cuối)',
+    is_night_training BOOLEAN DEFAULT FALSE COMMENT 'Huấn luyện đêm',
+    is_outdoor BOOLEAN DEFAULT FALSE COMMENT 'Ngoài thao trường',
+    is_heavy_physical BOOLEAN DEFAULT FALSE COMMENT 'Thể lực nặng',
+    prerequisite_node_id INT DEFAULT NULL COMMENT 'ID bài tiên quyết',
+    time_node_id INT NULL COMMENT 'ID nút thời gian mỏ neo (NULL = Cả năm/Root)',
+    FOREIGN KEY (plan_target_id) REFERENCES plan_target(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES program_node(id) ON DELETE CASCADE,
+    FOREIGN KEY (node_type_id) REFERENCES program_node_type(id),
+    FOREIGN KEY (prerequisite_node_id) REFERENCES program_node(id) ON DELETE SET NULL
+,
+    FOREIGN KEY (time_node_id) REFERENCES time_node(id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 
 CREATE TABLE time_allocation (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -257,3 +262,12 @@ CREATE TABLE scheduling_priority_rule (
     is_active BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (plan_id) REFERENCES plan(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- Seed data for time_node_type
+INSERT INTO time_node_type (id, code, name, depth_level) VALUES
+(1, 'YEAR', 'Năm huấn luyện', 1),
+(2, 'STAGE', 'Giai đoạn', 2),
+(3, 'MONTH', 'Tháng', 3),
+(4, 'WEEK', 'Tuần', 4)
+ON DUPLICATE KEY UPDATE code=VALUES(code), name=VALUES(name), depth_level=VALUES(depth_level);

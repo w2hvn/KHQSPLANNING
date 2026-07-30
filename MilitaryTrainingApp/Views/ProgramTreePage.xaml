@@ -100,6 +100,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Độ Phức Tạp:" VerticalAlignment="Center" FontWeight="SemiBold"/>
                     <ComboBox x:Name="cboComplexityLevel" Grid.Column="1">
+                        <ComboBoxItem Content="0 - Không phân loại (Trung tính)" Tag="0"/>
                         <ComboBoxItem Content="1 - Cơ bản (GĐ1/Tháng đầu)" Tag="1"/>
                         <ComboBoxItem Content="2 - Nâng cao (GĐ2/Tháng cuối)" Tag="2"/>
                     </ComboBox>
