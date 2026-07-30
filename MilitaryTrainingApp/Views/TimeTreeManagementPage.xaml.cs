@@ -73,35 +73,6 @@ namespace MilitaryTrainingApp.Views
                 })
                 .ToList();
         }
-
-        private async void BtnGenerateTree_Click(object sender, RoutedEventArgs e)
-        {
-            if (cboPlans.SelectedItem is Plan selectedPlan)
-            {
-                var result = MessageBox.Show($"Bạn có chắc chắn muốn TẠO MỚI (và xóa cũ) cây thời gian cho Kế hoạch {selectedPlan.Name} (Năm {selectedPlan.Year})?", "Cảnh báo Xóa Dữ Liệu", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (result == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        // Giả lập Stage Config mặc định (2 giai đoạn, chia tháng)
-                        var stageConfigs = new List<StageConfig>
-                        {
-                            new StageConfig { StageCode = "GD1", StageName = "Giai đoạn 1", Months = new List<int> { 2, 3, 4, 5, 6 } },
-                            new StageConfig { StageCode = "GD2", StageName = "Giai đoạn 2", Months = new List<int> { 7, 8, 9, 10, 11, 12 } }
-                        };
-
-                        await TimeStructureGenerator.BuildCompleteTimeTreeAsync(selectedPlan.Id, selectedPlan.Year, stageConfigs);
-
-                        MessageBox.Show("Khởi tạo Cây thời gian thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-                        LoadTimeTree(); // Refresh UI
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Lỗi khởi tạo cây thời gian: {ex.Message}");
-                    }
-                }
-            }
-        }
     }
 
     public class TimeTreeDisplayItem

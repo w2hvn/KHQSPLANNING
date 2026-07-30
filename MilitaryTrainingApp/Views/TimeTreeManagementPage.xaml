@@ -10,12 +10,11 @@
 
         <Border Grid.Row="0" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="5" Padding="15" Margin="0,0,0,10">
             <StackPanel>
-                <TextBlock Text="CÔNG CỤ SINH CÂY THỜI GIAN TỰ ĐỘNG THEO NĂM" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,10"/>
-                <TextBlock Text="Chức năng này sẽ tạo Cây thời gian chuẩn (Năm -> Giai đoạn -> Tháng -> Tuần) dựa theo Kế hoạch đang chọn. CHÚ Ý: Chạy chức năng này sẽ XÓA TOÀN BỘ cấu trúc cây thời gian và phân bổ cũ của Kế hoạch hiện tại!" Foreground="DarkRed" TextWrapping="Wrap" Margin="0,0,0,15"/>
+                <TextBlock Text="CÔNG CỤ XEM CÂY THỜI GIAN" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,10"/>
+                <TextBlock Text="Cây thời gian được khởi tạo tự động khi tạo mới Kế hoạch. Màn hình này dùng để theo dõi cấu trúc thời gian chuẩn (Năm -> Giai đoạn -> Tháng -> Tuần)." Foreground="Gray" TextWrapping="Wrap" Margin="0,0,0,15"/>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
@@ -23,8 +22,6 @@
 
                     <TextBlock Text="Chọn Kế Hoạch Năm:" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,10,0"/>
                     <ComboBox x:Name="cboPlans" Grid.Column="1" Width="250" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="CboPlans_SelectionChanged"/>
-
-                    <Button x:Name="btnGenerateTree" Grid.Column="2" Content="Khởi Tạo Cây Thời Gian Mặc Định" Background="{StaticResource AccentBrush}" Foreground="White" FontWeight="Bold" Padding="15,5" Margin="20,0,0,0" Click="BtnGenerateTree_Click"/>
                 </Grid>
             </StackPanel>
         </Border>

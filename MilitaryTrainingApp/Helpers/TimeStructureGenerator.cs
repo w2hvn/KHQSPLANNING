@@ -125,19 +125,18 @@ namespace MilitaryTrainingApp.Helpers
         /// <summary>
         /// Tạo cây thời gian hoàn chỉnh trong CSDL (Năm -> Giai đoạn -> Tháng -> Tuần).
         /// </summary>
+        /// <param name="db">Instance của AppDbContext đang mở (cho phép dùng chung Transaction)</param>
         /// <param name="planId">Id của Plan cần tạo cây</param>
         /// <param name="year">Năm</param>
         /// <param name="stageConfigs">Cấu hình các Giai đoạn và Tháng</param>
-        public static async Task BuildCompleteTimeTreeAsync(int planId, int year, List<StageConfig> stageConfigs)
+        public static async Task BuildCompleteTimeTreeAsync(AppDbContext db, int planId, int year, List<StageConfig> stageConfigs)
         {
-            using var db = new AppDbContext();
-
-            // 1. Xóa các TimeNode cũ của planId (các node con sẽ tự động xóa nhờ Cascade Delete)
+            // 1. Xóa các TimeNode cũ của planId (nếu có - các node con sẽ tự động xóa nhờ Cascade Delete)
             var oldNodes = await db.TimeNodes.Where(tn => tn.PlanId == planId && tn.ParentId == null).ToListAsync();
             db.TimeNodes.RemoveRange(oldNodes);
             await db.SaveChangesAsync();
 
-            // Lấy các NodeTypeId (Giả định rằng các Code 'YEAR', 'STAGE', 'MONTH', 'WEEK' đã có trong DB)
+            // Lấy các NodeTypeId
             var nodeTypes = await db.TimeNodeTypes.ToDictionaryAsync(nt => nt.Code, nt => nt.Id);
             if (!nodeTypes.ContainsKey("YEAR") || !nodeTypes.ContainsKey("STAGE") || !nodeTypes.ContainsKey("MONTH") || !nodeTypes.ContainsKey("WEEK"))
             {
@@ -151,7 +150,9 @@ namespace MilitaryTrainingApp.Helpers
                 NodeTypeId = nodeTypes["YEAR"],
                 Code = $"Y{year}",
                 Name = $"Năm {year}",
-                ParentId = null // Root node
+                ParentId = null, // Root node
+                IsManual = false,
+                IsLocked = false
             };
             db.TimeNodes.Add(yearNode);
             await db.SaveChangesAsync(); // Lưu để lấy Id (Trigger trong MySQL sẽ lo tree_path & level)
@@ -170,7 +171,9 @@ namespace MilitaryTrainingApp.Helpers
                     NodeTypeId = nodeTypes["STAGE"],
                     Code = stageConfig.StageCode,
                     Name = stageConfig.StageName,
-                    SortOrder = stageOrder++
+                    SortOrder = stageOrder++,
+                    IsManual = false,
+                    IsLocked = false
                 };
                 db.TimeNodes.Add(stageNode);
                 await db.SaveChangesAsync();
@@ -185,7 +188,9 @@ namespace MilitaryTrainingApp.Helpers
                         NodeTypeId = nodeTypes["MONTH"],
                         Code = $"M{monthIndex:D2}",
                         Name = $"Tháng {monthIndex}",
-                        SortOrder = monthIndex
+                        SortOrder = monthIndex,
+                        IsManual = false,
+                        IsLocked = false
                     };
                     db.TimeNodes.Add(monthNode);
                     await db.SaveChangesAsync();
@@ -204,7 +209,9 @@ namespace MilitaryTrainingApp.Helpers
                             Name = week.DisplayName, // "Tuần x (dd/MM - dd/MM)"
                             StartDate = week.StartDate,
                             EndDate = week.EndDate,
-                            SortOrder = week.WeekIndexInMonth
+                            SortOrder = week.WeekIndexInMonth,
+                            IsManual = false,
+                            IsLocked = false
                         };
                         db.TimeNodes.Add(weekNode);
                     }

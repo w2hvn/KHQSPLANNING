@@ -74,20 +74,49 @@ namespace MilitaryTrainingApp.Views
             try
             {
                 using var db = new AppDbContext();
+                using var transaction = await db.Database.BeginTransactionAsync();
+
+                var newPlans = new System.Collections.Generic.List<Plan>();
+
                 foreach (var plan in _plans)
                 {
                     if (plan.Id == 0)
+                    {
                         db.Plans.Add(plan);
+                        newPlans.Add(plan); // Cần sinh cây thời gian cho plan mới này
+                    }
                     else
+                    {
                         db.Entry(plan).State = EntityState.Modified;
+                    }
                 }
-                await db.SaveChangesAsync();
-                MessageBox.Show("Lưu Kế hoạch thành công!");
+
+                await db.SaveChangesAsync(); // Lưu để sinh Id cho các Plan mới
+
+                if (newPlans.Any())
+                {
+                    // Cấu hình Giai đoạn chuẩn theo quy tắc: T3-T7 và T8-T12
+                    var stageConfigs = new System.Collections.Generic.List<MilitaryTrainingApp.Helpers.StageConfig>
+                    {
+                        new MilitaryTrainingApp.Helpers.StageConfig { StageCode = "GD1", StageName = "Giai đoạn 1", Months = new System.Collections.Generic.List<int> { 3, 4, 5, 6, 7 } },
+                        new MilitaryTrainingApp.Helpers.StageConfig { StageCode = "GD2", StageName = "Giai đoạn 2", Months = new System.Collections.Generic.List<int> { 8, 9, 10, 11, 12 } }
+                    };
+
+                    foreach (var newPlan in newPlans)
+                    {
+                        // Kích hoạt tự động sinh cây thời gian
+                        await MilitaryTrainingApp.Helpers.TimeStructureGenerator.BuildCompleteTimeTreeAsync(db, newPlan.Id, newPlan.Year, stageConfigs);
+                    }
+                }
+
+                await transaction.CommitAsync();
+
+                MessageBox.Show("Lưu Kế hoạch và Cấu trúc Thời gian thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
                 LoadData(); // reload
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi lưu dữ liệu: {ex.InnerException?.Message ?? ex.Message}");
+                MessageBox.Show($"Lỗi lưu dữ liệu: {ex.InnerException?.Message ?? ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
