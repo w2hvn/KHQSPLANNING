@@ -58,7 +58,7 @@
             </Grid.RowDefinitions>
 
             <!-- Header Info & Engine Tools -->
-            <Border Grid.Row="0" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,10">
+            <Border Grid.Row="0" Background="#F0F8FF" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,10">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -66,11 +66,11 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="ĐANG PHÂN BỔ CHO: " FontWeight="Bold" Foreground="Gray"/>
-                        <TextBlock x:Name="txtParentNodeName" Text="---" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,20,0"/>
+                        <TextBlock Text="📌 PHẠM VI ĐANG TÁC NGHIỆP: " FontWeight="Bold" Foreground="DarkRed" FontSize="14"/>
+                        <TextBlock x:Name="txtParentNodeName" Text="[---]" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" FontSize="14" Margin="0,0,20,0"/>
 
-                        <TextBlock Text="CẤP CON: " FontWeight="Bold" Foreground="Gray"/>
-                        <TextBlock x:Name="txtChildLevelName" Text="---" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}"/>
+                        <TextBlock Text="ĐƠN VỊ TÍNH/CẤP: " FontWeight="Bold" Foreground="Gray" FontSize="14"/>
+                        <TextBlock x:Name="txtChildLevelName" Text="---" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" FontSize="14"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal">

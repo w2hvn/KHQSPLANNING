@@ -79,10 +79,7 @@ namespace MilitaryTrainingApp.Views
                     // Tự động gán và gọi hàm load
                     if (targetNode != null)
                     {
-                        // Update UI selection visually if possible
-                        SelectNodeInTreeView(tvTimeNodes, targetNode);
-
-                        // Kích hoạt logic nạp dữ liệu
+                        // Kích hoạt logic nạp dữ liệu (Không dùng TreeView đệ quy)
                         await SelectAndLoadNodeData(targetNode.Id);
                     }
                 }
@@ -188,13 +185,6 @@ namespace MilitaryTrainingApp.Views
                 if (found != null) return found;
             }
             return null;
-        }
-
-        private void SelectNodeInTreeView(ItemsControl parentContainer, TimeTreeNodeItem targetNode)
-        {
-            // Note: WPF TreeView programmatic selection logic can be tricky without MVVM binding.
-            // This is a minimal visual selection attempt. Real automatic selection may require recursive Generator generation.
-            // For now, the logical loading works perfectly without forcing visual selection on the tree.
         }
 
         private void BuildDynamicColumns()
