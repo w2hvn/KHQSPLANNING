@@ -59,6 +59,13 @@ CREATE TABLE time_node (
     FOREIGN KEY (parent_id) REFERENCES time_node(id) ON DELETE CASCADE,
     FOREIGN KEY (node_type_id) REFERENCES time_node_type(id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE facility_type (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    description TEXT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE program_node (
     id INT AUTO_INCREMENT PRIMARY KEY,
     plan_target_id INT NOT NULL,
@@ -75,13 +82,15 @@ CREATE TABLE program_node (
     is_outdoor BOOLEAN DEFAULT FALSE COMMENT 'Ngoài thao trường',
     is_heavy_physical BOOLEAN DEFAULT FALSE COMMENT 'Thể lực nặng',
     prerequisite_node_id INT DEFAULT NULL COMMENT 'ID bài tiên quyết',
-    time_node_id INT NULL COMMENT 'ID nút thời gian mỏ neo (NULL = Cả năm/Root)',
+        requires_field BOOLEAN DEFAULT FALSE,
+    facility_type_id INT NULL,
     FOREIGN KEY (plan_target_id) REFERENCES plan_target(id) ON DELETE CASCADE,
     FOREIGN KEY (parent_id) REFERENCES program_node(id) ON DELETE CASCADE,
     FOREIGN KEY (node_type_id) REFERENCES program_node_type(id),
     FOREIGN KEY (prerequisite_node_id) REFERENCES program_node(id) ON DELETE SET NULL
 ,
-    FOREIGN KEY (time_node_id) REFERENCES time_node(id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    FOREIGN KEY (facility_type_id) REFERENCES facility_type(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -92,8 +101,7 @@ CREATE TABLE time_allocation (
     allocated_hours DECIMAL(8,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uk_program_time (program_node_id, time_node_id),
-    FOREIGN KEY (program_node_id) REFERENCES program_node(id) ON DELETE CASCADE,
-    FOREIGN KEY (time_node_id) REFERENCES time_node(id) ON DELETE CASCADE
+    FOREIGN KEY (program_node_id) REFERENCES program_node(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE program_node_decor (
@@ -271,3 +279,16 @@ INSERT INTO time_node_type (id, code, name, depth_level) VALUES
 (3, 'MONTH', 'Tháng', 3),
 (4, 'WEEK', 'Tuần', 4)
 ON DUPLICATE KEY UPDATE code=VALUES(code), name=VALUES(name), depth_level=VALUES(depth_level);
+
+CREATE TABLE IF NOT EXISTS program_node_capacity (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    program_node_id INT NOT NULL,
+    time_node_id INT NOT NULL,
+    allocated_capacity DECIMAL(8,2) DEFAULT 0.00,
+    is_manual BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (program_node_id) REFERENCES program_node(id) ON DELETE CASCADE,
+    FOREIGN KEY (time_node_id) REFERENCES time_node(id) ON DELETE CASCADE,
+    UNIQUE KEY (program_node_id, time_node_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

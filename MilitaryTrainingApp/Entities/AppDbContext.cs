@@ -12,6 +12,8 @@ namespace MilitaryTrainingApp.Entities
         public DbSet<ProgramNode> ProgramNodes { get; set; } = null!;
         public DbSet<TimeNode> TimeNodes { get; set; } = null!;
         public DbSet<TimeAllocation> TimeAllocations { get; set; } = null!;
+        public DbSet<ProgramNodeCapacity> ProgramNodeCapacities { get; set; } = null!;
+        public DbSet<FacilityType> FacilityTypes { get; set; } = null!;
         public DbSet<ProgramNodeDecor> ProgramNodeDecors { get; set; } = null!;
         public DbSet<BlackoutDate> BlackoutDates { get; set; } = null!;
         public DbSet<SchedulingPriorityRule> SchedulingPriorityRules { get; set; } = null!;
@@ -113,11 +115,6 @@ namespace MilitaryTrainingApp.Entities
                       .WithMany()
                       .HasForeignKey(e => e.PrerequisiteNodeId)
                       .OnDelete(DeleteBehavior.SetNull);
-
-                entity.HasOne(e => e.TimeNode)
-                      .WithMany()
-                      .HasForeignKey(e => e.TimeNodeId)
-                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<TimeNode>(entity =>
@@ -177,6 +174,12 @@ namespace MilitaryTrainingApp.Entities
                       .WithOne(pn => pn.Decor)
                       .HasForeignKey<ProgramNodeDecor>(e => e.ProgramNodeId)
                       .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<ProgramNodeCapacity>(entity =>
+            {
+                entity.ToTable("program_node_capacity");
+                entity.HasIndex(e => new { e.ProgramNodeId, e.TimeNodeId }).IsUnique();
             });
 
             modelBuilder.Entity<BlackoutDate>(entity =>

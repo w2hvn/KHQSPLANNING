@@ -246,28 +246,44 @@ namespace MilitaryTrainingApp.Views
                             IsHeavyPhysical = pn.IsHeavyPhysical,
                             PrerequisiteNodeId = pn.PrerequisiteNodeId,
                             BgColorHex = pn.Decor?.BgColorHex ?? "#FFFFFF",
-                            ParentMaxBudget = pn.Capacity
+                            MasterCapacity = pn.Capacity, // Master
+                            ParentMaxBudget = pn.Capacity // At Level 1, Sub-Capacity equals Master Capacity
                         });
                     }
                 }
             }
             else
             {
+                // Note: For inner nodes, we ideally query ProgramNodeCapacity, but the existing code used TimeAllocations from the parent.
+                // We'll adjust it to respect Sub-Capacity from the new ProgramNodeCapacity table if available, else fallback to parentAllocations.
                 var parentAllocations = await db.TimeAllocations
                     .Where(ta => ta.TimeNodeId == _selectedTimeNode.Id && ta.AllocatedHours > 0)
                     .ToListAsync();
 
+                var subCapacities = await db.Set<ProgramNodeCapacity>()
+                    .Where(c => c.TimeNodeId == _selectedTimeNode.Id)
+                    .ToListAsync();
+
                 var allocatedProgramIds = parentAllocations.Select(ta => ta.ProgramNodeId).ToHashSet();
+
+                // Also include any program node that has an explicit Sub-Capacity allocated for this time node
+                var subCapacityProgramIds = subCapacities.Select(c => c.ProgramNodeId).ToHashSet();
+                allocatedProgramIds.UnionWith(subCapacityProgramIds);
 
                 foreach (var pn in allProgramNodes)
                 {
                     if (pn.Level == 1 || allocatedProgramIds.Contains(pn.Id))
                     {
-                        decimal maxBudget = 0;
-                        if (pn.Level > 1)
+                        decimal subCapacity = 0;
+                        var explicitSubCap = subCapacities.FirstOrDefault(c => c.ProgramNodeId == pn.Id);
+                        if (explicitSubCap != null)
+                        {
+                            subCapacity = explicitSubCap.AllocatedCapacity;
+                        }
+                        else if (pn.Level > 1)
                         {
                             var alloc = parentAllocations.FirstOrDefault(ta => ta.ProgramNodeId == pn.Id);
-                            if (alloc != null) maxBudget = alloc.AllocatedHours;
+                            if (alloc != null) subCapacity = alloc.AllocatedHours;
                         }
 
                         validRowItems.Add(new AllocationRowItem
@@ -282,7 +298,8 @@ namespace MilitaryTrainingApp.Views
                             IsHeavyPhysical = pn.IsHeavyPhysical,
                             PrerequisiteNodeId = pn.PrerequisiteNodeId,
                             BgColorHex = pn.Decor?.BgColorHex ?? "#FFFFFF",
-                            ParentMaxBudget = maxBudget
+                            MasterCapacity = pn.Capacity, // Master
+                            ParentMaxBudget = subCapacity // Sub-Capacity
                         });
                     }
                 }
@@ -312,6 +329,22 @@ namespace MilitaryTrainingApp.Views
             dgAllocation.ItemsSource = _rowItems;
         }
 
+        private void BtnAddCapacity_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentPlanTargetId <= 0 || _currentTimeNodeId == null)
+            {
+                MessageBox.Show("Vui lòng chọn Mục tiêu Huấn luyện và Nút thời gian hiện tại trên Header.", "Thiếu thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var dialog = new AddProgramNodeCapacityDialog(_currentPlanTargetId, _currentTimeNodeId.Value);
+            if (dialog.ShowDialog() == true)
+            {
+                MessageBox.Show("Đã thêm bài học và cấp Master & Sub-Capacity thành công. Đang tải lại dữ liệu...", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                _ = SelectAndLoadNodeData(_currentTimeNodeId.Value); // Reload the grid
+            }
+        }
+
         private void DgAllocation_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             if (e.EditingElement is TextBox textBox && e.Row.Item is AllocationRowItem row)
@@ -323,8 +356,14 @@ namespace MilitaryTrainingApp.Views
 
                     if (row.TotalAllocatedToChildren > row.ParentMaxBudget)
                     {
-                        MessageBox.Show($"Tổng thời gian phân bổ ({row.TotalAllocatedToChildren}h) cho bài '{row.ProgramName}' vượt quá hạn mức cấp cha ({row.ParentMaxBudget}h)!",
-                            "Cảnh báo Hạn Mức", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show($"Tổng thời gian phân bổ ({row.TotalAllocatedToChildren}h) cho bài '{row.ProgramName}' vượt quá hạn mức Sub-Capacity được cấp cho node này ({row.ParentMaxBudget}h)!",
+                            "Cảnh báo Dual-Level: Vượt Sub-Capacity", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+
+                    if (row.TotalAllocatedToChildren > row.MasterCapacity)
+                    {
+                        MessageBox.Show($"CẢNH BÁO TỐI QUAN TRỌNG: Tổng phân bổ ({row.TotalAllocatedToChildren}h) ĐÃ VƯỢT QUÁ MASTER CAPACITY ({row.MasterCapacity}h) của bài học '{row.ProgramName}'!",
+                            "Cảnh báo Dual-Level: Vượt Master Capacity", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
@@ -513,7 +552,8 @@ namespace MilitaryTrainingApp.Views
         }
         public FontWeight FontWeight => Level == 1 ? FontWeights.Bold : FontWeights.Normal;
 
-        public decimal ParentMaxBudget { get; set; }
+        public decimal MasterCapacity { get; set; } // Added for Dual-Level Protection (Master Prompt V2.0)
+        public decimal ParentMaxBudget { get; set; } // This is now contextually the Sub-Capacity
 
         private Dictionary<int, decimal> _childAllocations = new Dictionary<int, decimal>();
 

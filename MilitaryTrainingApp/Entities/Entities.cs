@@ -106,14 +106,39 @@ namespace MilitaryTrainingApp.Entities
         public bool IsNightTraining { get; set; } = false;
         public bool IsOutdoor { get; set; } = false;
         public bool IsHeavyPhysical { get; set; } = false;
+        public bool RequiresField { get; set; } = false;
         public int? PrerequisiteNodeId { get; set; }
-        public int? TimeNodeId { get; set; }
+        public int? FacilityTypeId { get; set; }
 
-        public virtual TimeNode? TimeNode { get; set; }
         public ProgramNode? PrerequisiteNode { get; set; }
+        public FacilityType? FacilityType { get; set; }
         public ProgramNodeDecor? Decor { get; set; }
         public ICollection<ProgramNode> Children { get; set; } = new List<ProgramNode>();
+        public ICollection<ProgramNodeCapacity> ProgramNodeCapacities { get; set; } = new List<ProgramNodeCapacity>();
         public ICollection<TimeAllocation> TimeAllocations { get; set; } = new List<TimeAllocation>();
+    }
+
+    public class FacilityType
+    {
+        public int Id { get; set; }
+        public string Code { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public string? Description { get; set; }
+
+        public ICollection<ProgramNode> ProgramNodes { get; set; } = new List<ProgramNode>();
+    }
+
+    public class ProgramNodeCapacity
+    {
+        public int Id { get; set; }
+        public int ProgramNodeId { get; set; }
+        public ProgramNode ProgramNode { get; set; } = null!;
+        public int TimeNodeId { get; set; }
+        public TimeNode TimeNode { get; set; } = null!;
+        public decimal AllocatedCapacity { get; set; }
+        public bool IsManual { get; set; } = false;
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 
     public class TimeNode
@@ -137,6 +162,7 @@ namespace MilitaryTrainingApp.Entities
         public bool IsLocked { get; set; } = false;
 
         public ICollection<TimeNode> Children { get; set; } = new List<TimeNode>();
+        public ICollection<ProgramNodeCapacity> ProgramNodeCapacities { get; set; } = new List<ProgramNodeCapacity>();
         public ICollection<TimeAllocation> TimeAllocations { get; set; } = new List<TimeAllocation>();
     }
 
