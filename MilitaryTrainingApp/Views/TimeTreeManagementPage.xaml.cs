@@ -33,6 +33,11 @@ namespace MilitaryTrainingApp.Views
             }
         }
 
+        public void RefreshData()
+        {
+            LoadPlans();
+        }
+
         private void CboPlans_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             LoadTimeTree();

@@ -65,27 +65,34 @@ namespace MilitaryTrainingApp
         // NHÓM 1
         private void Nav_PlanManagement_Click(object sender, RoutedEventArgs e)
         {
+            _planManagementPage.RefreshData();
             mainFrame.Navigate(_planManagementPage);
         }
 
         private void Nav_TrainingTarget_Click(object sender, RoutedEventArgs e)
         {
+            _trainingTargetPage.RefreshData();
             mainFrame.Navigate(_trainingTargetPage);
         }
 
         private void Nav_TimeTree_Click(object sender, RoutedEventArgs e)
         {
+            _timeTreeManagementPage.RefreshData();
             mainFrame.Navigate(_timeTreeManagementPage);
         }
 
         private void Nav_ProgramTree_Click(object sender, RoutedEventArgs e)
         {
+            if (_currentPlanTargetId > 0)
+                _programTreePage.RefreshData(_currentPlanTargetId);
             mainFrame.Navigate(_programTreePage);
         }
 
         // NHÓM 2
         private void Nav_CascadeAllocation_Click(object sender, RoutedEventArgs e)
         {
+            if (_currentPlanTargetId > 0)
+                _cascadeAllocationPage.RefreshData(_currentPlanTargetId, _currentTimeNodeId);
             mainFrame.Navigate(_cascadeAllocationPage);
         }
 

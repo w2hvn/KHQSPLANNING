@@ -18,6 +18,11 @@ namespace MilitaryTrainingApp.Views
             LoadData();
         }
 
+        public void RefreshData()
+        {
+            LoadData();
+        }
+
         private async void LoadData()
         {
             try
