@@ -1,7 +1,7 @@
 <Window x:Class="MilitaryTrainingApp.Views.ConflictResolverWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Trợ lý Chỉ huy - Xử lý phân vân" Height="300" Width="600" WindowStartupLocation="CenterOwner" Topmost="True" Background="{StaticResource BackgroundBrush}">
+        Title="Trợ lý Chỉ huy - Xử lý phân vân" Height="300" Width="600" WindowStartupLocation="CenterScreen" Topmost="True" Background="{StaticResource BackgroundBrush}">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
